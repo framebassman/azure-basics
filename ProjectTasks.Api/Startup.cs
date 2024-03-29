@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectTasks.Api.Models;
 
 namespace ProjectTasks.Api
 {
@@ -27,6 +29,7 @@ namespace ProjectTasks.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
+            services.AddDbContext<ApplicationContext>();
             services.AddSwaggerGen();
         }
 
