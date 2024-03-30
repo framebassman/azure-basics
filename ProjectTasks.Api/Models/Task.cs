@@ -1,19 +1,18 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ProjectTasks.Api.Models;
 
-[Table("projects")]
-public class Project
+[Table("tasks")]
+public class Task
 {
     [Column("id")]
     [Key]
     public int Id { get; set; }
     public string Name { get; set; }
-    public string Code { get; set; }
-    [ForeignKey("ProjectReferenceId")]
+    public string Description { get; set; }
+    public int ProjectReferenceId { get; set; }
     [JsonIgnore]
-    public ICollection<Task> Tasks { get; set; }
+    public Project Project { get; set; }
 }

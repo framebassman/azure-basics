@@ -29,7 +29,7 @@ namespace ProjectTasks.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddDbContext<ApplicationContext>();
+            services.AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase("Data"));
             services.AddSwaggerGen();
         }
 

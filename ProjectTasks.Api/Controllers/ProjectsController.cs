@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
@@ -7,10 +8,10 @@ namespace ProjectTasks.Api.Controllers;
 [Route("[controller]")]
 public class ProjectsController
 {
-    private ILogger<HomeController> _logger;
+    private ILogger<ProjectsController> _logger;
     private ApplicationContext _db;
 
-    public ProjectsController(ILogger<HomeController> logger, ApplicationContext db)
+    public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext db)
     {
         _logger = logger;
         _db = db;
@@ -26,8 +27,13 @@ public class ProjectsController
     [HttpPost]
     public IActionResult Create([FromBody] Project project)
     {
-        _db.Projects.Add(project);
-        _db.SaveChanges();
-        return new OkResult();
+        try {
+            _db.Projects.Add(project);
+            _db.SaveChanges();
+            return new OkResult();
+        }
+        catch (ArgumentException argumentException) {
+            return new BadRequestObjectResult(argumentException.Message);
+        }
     }
 }
