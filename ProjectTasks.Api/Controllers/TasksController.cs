@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
+using Task = ProjectTasks.Api.Models.Task;
 
 namespace ProjectTasks.Api.Controllers;
 
@@ -19,16 +22,16 @@ public class TasksController
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all tasks");
-        return new OkObjectResult(_db.Tasks);
+        return new OkObjectResult(await _db.Tasks.ToListAsync());
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Task task)
+    public async Task<IActionResult> CreateAsync([FromBody] Task task)
     {
-        var candidateProject = _db.Projects.FirstOrDefault(p => p.Id == task.ProjectReferenceId);
+        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == task.ProjectReferenceId);
         if (candidateProject == null)
         {
             return new BadRequestObjectResult($"There is no project with {task.ProjectReferenceId} id");
@@ -36,8 +39,8 @@ public class TasksController
 
         try {
             task.Project = candidateProject;
-            _db.Tasks.Add(task);
-            _db.SaveChanges();
+            await _db.Tasks.AddAsync(task);
+            await _db.SaveChangesAsync();
             return new OkResult();
         }
         catch (ArgumentException argumentException) {

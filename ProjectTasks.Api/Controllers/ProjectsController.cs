@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
 
@@ -18,18 +20,18 @@ public class ProjectsController
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all projects");
-        return new OkObjectResult(_db.Projects);
+        return new OkObjectResult(await _db.Projects.ToListAsync());
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Project project)
+    public async Task<IActionResult> CreateAsync([FromBody] Project project)
     {
         try {
-            _db.Projects.Add(project);
-            _db.SaveChanges();
+            await _db.Projects.AddAsync(project);
+            await _db.SaveChangesAsync();
             return new OkResult();
         }
         catch (ArgumentException argumentException) {
