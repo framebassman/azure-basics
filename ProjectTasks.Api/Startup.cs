@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,10 +27,14 @@ namespace ProjectTasks.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase("Data"));
+            services.AddDbContext<ApplicationContext>(options
+                => options.UseInMemoryDatabase("Data")
+            );
+            services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
         }
 

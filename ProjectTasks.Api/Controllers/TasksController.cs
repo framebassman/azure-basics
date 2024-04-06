@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,34 +16,43 @@ public class TasksController
 {
     private ILogger<TasksController> _logger;
     private ApplicationContext _db;
+    private IMapper _mapper;
 
-    public TasksController(ILogger<TasksController> logger, ApplicationContext db)
+    public TasksController(ILogger<TasksController> logger, ApplicationContext db, IMapper mapper)
     {
         _logger = logger;
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all tasks");
-        return new OkObjectResult(await _db.Tasks.ToListAsync());
+        var tasks = await _db.Tasks.ToListAsync();
+        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] Task task)
+    public async Task<IActionResult> CreateAsync([FromBody] TaskRequest taskRequest)
     {
-        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == task.ProjectReferenceId);
+        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
         if (candidateProject == null)
         {
-            return new BadRequestObjectResult($"There is no project with {task.ProjectReferenceId} id");
+            return new BadRequestObjectResult($"There is no project with {taskRequest.ProjectReferenceId} id");
         }
 
-        try {
-            task.Project = candidateProject;
+        try
+        {
+            var task = new Task
+            {
+                Name = taskRequest.Name,
+                Description = taskRequest.Description,
+                Project = candidateProject
+            };
             await _db.Tasks.AddAsync(task);
             await _db.SaveChangesAsync();
-            return new OkResult();
+            return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
         }
         catch (ArgumentException argumentException) {
             return new BadRequestObjectResult(argumentException.Message);

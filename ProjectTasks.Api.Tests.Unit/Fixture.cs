@@ -16,6 +16,7 @@ namespace ProjectTasks.Api.Tests.Unit
             => services
                 .AddTransient<ProjectsController>()
                 .AddTransient<TasksController>()
+                .AddAutoMapper(typeof(Startup))
                 .AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase("Unit"));
 
         protected override ValueTask DisposeAsyncCore() => new ValueTask();
