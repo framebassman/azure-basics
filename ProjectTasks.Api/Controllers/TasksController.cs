@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
 using Task = ProjectTasks.Api.Models.Task;
@@ -12,7 +14,7 @@ using Task = ProjectTasks.Api.Models.Task;
 namespace ProjectTasks.Api.Controllers;
 
 [Route("[controller]")]
-public class TasksController
+public class TasksController : Controller
 {
     private ILogger<TasksController> _logger;
     private ApplicationContext _db;
@@ -28,9 +30,9 @@ public class TasksController
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] int? id)
     {
-        var tasks = await _db.Tasks.ToListAsync();
         if (!id.HasValue)
         {
+            var tasks = await _db.Tasks.ToListAsync();
             _logger.LogInformation("Get all tasks");
             return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
         }
@@ -63,6 +65,11 @@ public class TasksController
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TaskRequest taskRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return new BadRequestObjectResult(taskRequest);
+        }
+
         var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
         if (candidateProject == null)
         {
