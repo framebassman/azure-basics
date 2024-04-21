@@ -41,7 +41,7 @@ namespace ProjectTasks.Api.Tests.Unit
         [Fact]
         public async void EmptyDb_GetAllTasks_ReturnNothing()
         {
-            var tasks = await _tasksController.GetAllAsync();
+            var tasks = await _tasksController.GetAllAsync(null);
             Assert.IsType<OkObjectResult>(tasks);
             Assert.Empty((IEnumerable) ((OkObjectResult) tasks).Value);
         }
@@ -102,7 +102,7 @@ namespace ProjectTasks.Api.Tests.Unit
             var createTaskResult = await _tasksController.CreateAsync(taskRequest);
             Assert.IsType<CreatedResult>(createTaskResult);
 
-            var tasks = await _tasksController.GetAllAsync();
+            var tasks = await _tasksController.GetAllAsync(null);
             Assert.IsType<OkObjectResult>(tasks);
             var taskResponses = (IEnumerable<TaskResponse>)((OkObjectResult)tasks).Value;
             Assert.Equal(taskResponses.First().Name, ((IEnumerable<TaskResponse>) ((OkObjectResult) tasks).Value).First().Name);

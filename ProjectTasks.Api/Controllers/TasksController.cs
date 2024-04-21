@@ -26,11 +26,38 @@ public class TasksController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] int? id)
     {
-        _logger.LogInformation("Get all tasks");
         var tasks = await _db.Tasks.ToListAsync();
-        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+        if (!id.HasValue)
+        {
+            _logger.LogInformation("Get all tasks");
+            return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+        }
+        else
+        {
+            return await GetTaskAsync(id.GetValueOrDefault());
+        }
+
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTaskAsync(int id)
+    {
+        _logger.LogInformation($"Get task with {id} id");
+        var tasks = await _db.Tasks.ToListAsync();
+        try
+        {
+            return new OkObjectResult(
+                _mapper.Map<TaskResponse>(
+                    tasks.First(task => task.Id == id)
+                )
+            );
+        }
+        catch
+        {
+            return new NotFoundObjectResult($"There is no Task with {id} id");
+        }
     }
 
     [HttpPost]
