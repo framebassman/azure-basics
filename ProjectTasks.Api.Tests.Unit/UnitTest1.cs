@@ -47,7 +47,7 @@ namespace ProjectTasks.Api.Tests.Unit
         }
 
         [Fact]
-        public async void CreateProject_GetAllProjects_ReturnTwoProjects()
+        public async void CreateProject_GetAllProjects_OneProject()
         {
             var projectRequest = new ProjectRequest { Code = "TST", Name = "Test" };
             var createResult = await _projectsController.CreateAsync(projectRequest);

@@ -28,38 +28,24 @@ public class TasksController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] int? id)
+    public async Task<IActionResult> GetAllAsync()
     {
-        if (!id.HasValue)
-        {
-            var tasks = await _db.Tasks.ToListAsync();
-            _logger.LogInformation("Get all tasks");
-            return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
-        }
-        else
-        {
-            return await GetTaskAsync(id.GetValueOrDefault());
-        }
-
+        var tasks = await _db.Tasks.ToListAsync();
+        _logger.LogInformation("Get all tasks");
+        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskAsync(int id)
     {
         _logger.LogInformation($"Get task with {id} id");
-        var tasks = await _db.Tasks.ToListAsync();
-        try
-        {
-            return new OkObjectResult(
-                _mapper.Map<TaskResponse>(
-                    tasks.First(task => task.Id == id)
-                )
-            );
-        }
-        catch
+        var candidate = await _db.Tasks.FirstOrDefaultAsync(task => task.Id == id);
+        if (candidate == null)
         {
             return new NotFoundObjectResult($"There is no Task with {id} id");
         }
+
+        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(candidate));
     }
 
     [HttpPost]
@@ -76,20 +62,14 @@ public class TasksController : Controller
             return new BadRequestObjectResult($"There is no project with {taskRequest.ProjectReferenceId} id");
         }
 
-        try
+        var task = new Task
         {
-            var task = new Task
-            {
-                Name = taskRequest.Name,
-                Description = taskRequest.Description,
-                Project = candidateProject
-            };
-            await _db.Tasks.AddAsync(task);
-            await _db.SaveChangesAsync();
-            return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
-        }
-        catch (ArgumentException argumentException) {
-            return new BadRequestObjectResult(argumentException.Message);
-        }
+            Name = taskRequest.Name,
+            Description = taskRequest.Description,
+            Project = candidateProject
+        };
+        await _db.Tasks.AddAsync(task);
+        await _db.SaveChangesAsync();
+        return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
     }
 }

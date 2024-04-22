@@ -35,20 +35,14 @@ public class ProjectsController
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] ProjectRequest projectRequest)
     {
-        try
+        var project = new Project
         {
-            var project = new Project
-            {
-                Name = projectRequest.Name,
-                Code = projectRequest.Code,
-            };
-            await _db.Projects.AddAsync(project);
-            await _db.SaveChangesAsync();
-            var projectResponse = _mapper.Map<ProjectResponse>(project);
-            return new CreatedResult("/projects", projectResponse);
-        }
-        catch (ArgumentException argumentException) {
-            return new BadRequestObjectResult(argumentException.Message);
-        }
+            Name = projectRequest.Name,
+            Code = projectRequest.Code,
+        };
+        await _db.Projects.AddAsync(project);
+        await _db.SaveChangesAsync();
+        var projectResponse = _mapper.Map<ProjectResponse>(project);
+        return new CreatedResult("/projects", projectResponse);
     }
 }
