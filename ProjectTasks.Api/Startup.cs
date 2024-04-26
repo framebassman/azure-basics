@@ -32,7 +32,7 @@ namespace ProjectTasks.Api
             services.AddHealthChecks();
             services.AddControllers();
             services.AddDbContext<ApplicationContext>(options
-                => options.UseInMemoryDatabase("Data")
+                => options.UseSqlite("Data Source=Database.db")
             );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
