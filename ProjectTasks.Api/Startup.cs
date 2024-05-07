@@ -31,8 +31,8 @@ namespace ProjectTasks.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddDbContext<ApplicationContext>(options
-                => options.UseInMemoryDatabase("Data")
+            services.AddDbContext<ApplicationContext>(
+                options => options.UseSqlServer("Data Source=passwordlessdbserver.database.windows.net;Initial Catalog=passwordlessdb; Authentication=Active Directory Default;Encrypt=True;")
             );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
