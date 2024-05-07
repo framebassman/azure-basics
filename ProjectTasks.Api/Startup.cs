@@ -32,7 +32,8 @@ namespace ProjectTasks.Api
             services.AddHealthChecks();
             services.AddControllers();
             services.AddDbContext<ApplicationContext>(
-                options => options.UseSqlServer("Data Source=passwordlessdbserver.database.windows.net;Initial Catalog=passwordlessdb; Authentication=Active Directory Default;Encrypt=True;")
+                options => options.UseInMemoryDatabase("Data")
+                // options => options.UseSqlServer("")
             );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
@@ -57,6 +58,14 @@ namespace ProjectTasks.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<ApplicationContext>();
+
+                dbContext.Database.EnsureCreated();
+            }
         }
     }    
 }
