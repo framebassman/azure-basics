@@ -33,8 +33,8 @@ namespace ProjectTasks.Api
             services.AddHealthChecks();
             services.AddControllers();
             services.AddDbContext<ApplicationContext>(
-                options => options.UseInMemoryDatabase("Data")
-                // options => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"))
+                // options => options.UseInMemoryDatabase("Data")
+                options => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"))
             );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
@@ -69,5 +69,5 @@ namespace ProjectTasks.Api
                 dbContext.Database.EnsureCreated();
             }
         }
-    }    
+    }
 }

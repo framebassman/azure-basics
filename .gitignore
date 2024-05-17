@@ -237,3 +237,5 @@ _Pvt_Extensions
 
 # vscode
 .vscode/settings.json
+
+**/appsettings.*.json
