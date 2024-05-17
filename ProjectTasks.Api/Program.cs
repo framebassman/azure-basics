@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Serilog;
+// using Serilog;
 
 namespace ProjectTasks.Api 
 {
@@ -11,26 +11,34 @@ namespace ProjectTasks.Api
     {
         public static void Main(string[] args)
         {
-            Serilog.Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(BuildConfiguration())
-                .CreateLogger();
-            try
-            {
-                Serilog.Log.Logger.Information("Getting started...");
-                Host.CreateDefaultBuilder(args)
-                    .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                    .Build()
-                    .Run();
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Logger.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Serilog.Log.CloseAndFlush();
-            }
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+                .Build()
+                .Run();
         }
+
+        // public static void MainSerilog(string[] args)
+        // {
+        //     Serilog.Log.Logger = new LoggerConfiguration()
+        //         .ReadFrom.Configuration(BuildConfiguration())
+        //         .CreateLogger();
+        //     try
+        //     {
+        //         Serilog.Log.Logger.Information("Getting started...");
+        //         Host.CreateDefaultBuilder(args)
+        //             .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+        //             .Build()
+        //             .Run();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Serilog.Log.Logger.Fatal(ex, "Host terminated unexpectedly");
+        //     }
+        //     finally
+        //     {
+        //         Serilog.Log.CloseAndFlush();
+        //     }
+        // }
 
         private static IConfiguration BuildConfiguration()
         {

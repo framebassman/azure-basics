@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
+// using Serilog;
 using ProjectTasks.Api.Models;
 
 namespace ProjectTasks.Api
@@ -33,12 +33,12 @@ namespace ProjectTasks.Api
             services.AddHealthChecks();
             services.AddControllers();
             services.AddDbContext<ApplicationContext>(
-                // options => options.UseInMemoryDatabase("Data")
-                options => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"))
+                options => options.UseInMemoryDatabase("Data")
+                // options => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"))
             );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
-            services.AddSerilog();
+            // services.AddSerilog();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
