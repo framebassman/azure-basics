@@ -5,18 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace ProjectTasks.Api 
+namespace ProjectTasks.Api
 {
     public class Program
     {
-        public static void MainUsual(string[] args)
-        {
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                .Build()
-                .Run();
-        }
-
         public static void Main(string[] args)
         {
             Serilog.Log.Logger = new LoggerConfiguration()
