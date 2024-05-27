@@ -1,10 +1,15 @@
+using System;
 using AutoMapper;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Web;
 using Serilog;
 using ProjectTasks.Api.Models;
 
@@ -32,13 +37,27 @@ namespace ProjectTasks.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddDbContext<ApplicationContext>(
-                // options => options.UseInMemoryDatabase("Data")
-                options => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"))
-            );
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
             services.AddSerilog();
+
+            SecretClientOptions secretClientOptions = new SecretClientOptions()
+            {
+                Retry =
+                {
+                    Delay= TimeSpan.FromSeconds(2),
+                    MaxDelay = TimeSpan.FromSeconds(16),
+                    MaxRetries = 5,
+                    Mode = RetryMode.Exponential
+                }
+            };
+            var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
+            var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
+            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            services.AddDbContext<ApplicationContext>(
+                // options => options.UseInMemoryDatabase("Data")
+                options => options.UseSqlServer(azureSqlConnectionString.Value)
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
