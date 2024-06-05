@@ -5,7 +5,9 @@ services:
       context: .
       dockerfile: ProjectTasks.Api/Dockerfile
     environment:
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:8080
     expose:
-      - 80
+      - 8080
+    ports:
+      - 80:8080
     tty: true

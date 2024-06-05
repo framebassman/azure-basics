@@ -4,7 +4,6 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
-        <ContainerUser>root</ContainerUser>
     </PropertyGroup>
 
     <ItemGroup>
