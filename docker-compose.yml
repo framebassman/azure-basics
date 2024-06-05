@@ -1,0 +1,11 @@
+services:
+  project_tasks_api:
+    container_name: project_tasks_api
+    build:
+      context: .
+      dockerfile: ProjectTasks.Api/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+    expose:
+      - 80
+    tty: true
