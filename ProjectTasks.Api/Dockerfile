@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0.3-alpine3.19-amd64 AS base
 USER $APP_UID
 WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0.203-alpine3.19-amd64 AS build
