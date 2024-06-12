@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Serilog;
-// using ProjectTasks.CosmosDb.Models;
+using ProjectTasks.CosmosDb.Models;
 
 namespace ProjectTasks.CosmosDb
 {
@@ -53,10 +53,10 @@ namespace ProjectTasks.CosmosDb
             // var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
             // var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
             // KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
-            // services.AddDbContext<ApplicationContext>(
-            //     options => options.UseInMemoryDatabase("Data")
-            //     // options => options.UseSqlServer(azureSqlConnectionString.Value)
-            // );
+            services.AddDbContext<ApplicationContext>(
+                options => options.UseInMemoryDatabase("Data")
+                // options => options.UseSqlServer(azureSqlConnectionString.Value)
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
