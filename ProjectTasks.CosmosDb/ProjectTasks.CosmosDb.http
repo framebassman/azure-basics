@@ -1,0 +1,6 @@
+@ProjectTasks.CosmosDb_HostAddress = http://localhost:5183
+
+GET {{ProjectTasks.CosmosDb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

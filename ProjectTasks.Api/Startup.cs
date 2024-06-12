@@ -51,12 +51,12 @@ namespace ProjectTasks.Api
                     Mode = RetryMode.Exponential
                 }
             };
-            var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
-            var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
-            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            // var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
+            // var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
+            // KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
             services.AddDbContext<ApplicationContext>(
-                // options => options.UseInMemoryDatabase("Data")
-                options => options.UseSqlServer(azureSqlConnectionString.Value)
+                options => options.UseInMemoryDatabase("Data")
+                // options => options.UseSqlServer(azureSqlConnectionString.Value)
             );
         }
 
@@ -80,13 +80,13 @@ namespace ProjectTasks.Api
                 options.RoutePrefix = string.Empty;
             });
 
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationContext>();
+            // using (var scope = app.ApplicationServices.CreateScope())
+            // {
+            //     var services = scope.ServiceProvider;
+            //     var dbContext = services.GetRequiredService<ApplicationContext>();
 
-                dbContext.Database.EnsureCreated();
-            }
+            //     dbContext.Database.EnsureCreated();
+            // }
         }
     }
 }

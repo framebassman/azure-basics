@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Api", "Project
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Api.Tests.Unit", "ProjectTasks.Api.Tests.Unit\ProjectTasks.Api.Tests.Unit.csproj", "{811905CF-6AFE-45E2-92E1-34D666BAD249}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.CosmosDb", "ProjectTasks.CosmosDb\ProjectTasks.CosmosDb.csproj", "{3915DCAE-A9C0-48C0-A38B-0046262811B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{811905CF-6AFE-45E2-92E1-34D666BAD249}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811905CF-6AFE-45E2-92E1-34D666BAD249}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811905CF-6AFE-45E2-92E1-34D666BAD249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
