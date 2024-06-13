@@ -54,8 +54,12 @@ namespace ProjectTasks.CosmosDb
             // var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
             // KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
             services.AddDbContext<ApplicationContext>(
-                options => options.UseInMemoryDatabase("Data")
+                // options => options.UseInMemoryDatabase("Data")
                 // options => options.UseSqlServer(azureSqlConnectionString.Value)
+                options => options.UseCosmos(
+                    Configuration.GetConnectionString("COSMOSDB"),
+                    "ProjectsTasks"
+                )
             );
         }
 

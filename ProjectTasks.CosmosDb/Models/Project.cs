@@ -5,15 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace ProjectTasks.CosmosDb.Models;
 
-[Table("projects")]
-public class Project
+public class Project : IContainerEntity
 {
-    [Column("id")]
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+
+    public string PartitionKey { get; set; }
+
     public string Name { get; set; }
-    public string Code { get; set; }
-    [ForeignKey("ProjectReferenceId")]
-    public ICollection<Task> Tasks { get; set; }
+    // [ForeignKey("ProjectReferenceId")]
+    // public ICollection<Task> Tasks { get; set; }
 }
