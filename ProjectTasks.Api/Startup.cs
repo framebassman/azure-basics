@@ -33,7 +33,6 @@ namespace ProjectTasks.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
