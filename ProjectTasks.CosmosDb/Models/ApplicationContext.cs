@@ -10,16 +10,6 @@ public class ApplicationContext : DbContext
     {
     }
 
-    public const string PartitionKey = nameof(PartitionKey);
-
-    public static string ComputePartitionKey<T>() =>
-        typeof(T).Name;
-
-    public void SetPartitionKey<T>(T entity)
-        where T : IContainerEntity =>
-        Entry(entity).Property(PartitionKey).CurrentValue =
-            ComputePartitionKey<T>();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Project>()
