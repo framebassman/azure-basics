@@ -11,13 +11,13 @@ using ProjectTasks.CosmosDb.Models;
 namespace ProjectTasks.CosmosDb.Controllers
 {
     [Route("[controller]")]
-    public class ProjectsController
+    public class TasksController
     {
-        private ILogger<ProjectsController> _logger;
+        private ILogger<TasksController> _logger;
         private ApplicationContext _db;
         private IMapper _mapper;
 
-        public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext db, IMapper mapper)
+        public TasksController(ILogger<TasksController> logger, ApplicationContext db, IMapper mapper)
         {
             _logger = logger;
             _db = db;
@@ -27,9 +27,9 @@ namespace ProjectTasks.CosmosDb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            _logger.LogInformation("Get all projects");
-            var projects = await _db.Projects.ToListAsync();
-            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
+            _logger.LogInformation("Get all tasks");
+            var tasks = await _db.Tasks.ToListAsync();
+            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(tasks));
         }
     }
 }
