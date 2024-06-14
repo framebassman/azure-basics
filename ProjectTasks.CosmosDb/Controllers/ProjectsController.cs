@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.CosmosDb.Models;
 
@@ -28,39 +29,16 @@ namespace ProjectTasks.CosmosDb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
+            var allTasks = _db.Tasks.ToList();
+
             _logger.LogInformation("Get all projects");
             var projects = await _db.Projects.ToListAsync();
-            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create()
-        {
-            _logger.LogInformation("Create project with task");
-            var project = new Project
-            {
-                Id = 2,
-                PartitionKey = "TestProject2",
-                Name = "TestProject2",
-                Code = "TPJ",
-                Tasks = new List<Models.Task>()
-            };
-            _db.Projects.Add(project);
-            await _db.SaveChangesAsync();
-
-            var projectInDb = _db.Projects.First(p => p.Id == 2);
-            var task = new Models.Task
-            {
-                Id = 2,
-                PartitionKey = "TestTask2",
-                Name = "TestTask2",
-                Description = "TestDescription2",
-                ProjectId = 2,
-                Project = projectInDb
-            };
-            _db.Tasks.Add(task);
-            await _db.SaveChangesAsync();
-            return new OkResult();
+            projects.ForEach(project => {
+                 _db.Entry(project)
+                    .Collection(b => b.Tasks)
+                    .Load();
+            });
+            return new OkObjectResult(projects);
         }
     }
 }

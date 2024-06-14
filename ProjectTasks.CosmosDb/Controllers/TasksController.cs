@@ -25,11 +25,12 @@ namespace ProjectTasks.CosmosDb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public IActionResult GetAllAsync()
         {
             _logger.LogInformation("Get all tasks");
-            var tasks = await _db.Tasks.ToListAsync();
-            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(tasks));
+            List<Models.Task> allTasks = _db.Tasks
+                .ToList();
+            return new OkObjectResult(allTasks);
         }
     }
 }
