@@ -50,12 +50,12 @@ namespace ProjectTasks.CosmosDb
                     Mode = RetryMode.Exponential
                 }
             };
-            // var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
-            // var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
-            // KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
+            var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
+            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-cosmosdb-connection-string");
             services.AddDbContext<ApplicationContext>(
                 options => options.UseCosmos(
-                    Configuration.GetConnectionString("COSMOSDB"),
+                    azureSqlConnectionString.Value,
                     "ProjectsTasks"
                 )
             );
