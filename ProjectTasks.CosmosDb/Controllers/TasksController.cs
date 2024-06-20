@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using ProjectTasks.CosmosDb.Models;
 
 namespace ProjectTasks.CosmosDb.Controllers
@@ -25,10 +20,27 @@ namespace ProjectTasks.CosmosDb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAll([FromQuery( Name = "projectId")] string projectIdentifier)
         {
-            _logger.LogInformation("Get all tasks");
-            var tasks = await _db.Tasks.ToListAsync();
+            List<Models.Task> tasks;
+            if (string.IsNullOrEmpty(projectIdentifier))
+            {
+                _logger.LogInformation("Get all tasks");
+                tasks = await _db.Tasks.ToListAsync();
+                return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+            }
+
+            _logger.LogInformation("Get all tasks for projectId: {@projectId}", projectIdentifier);
+            int projectId;
+            bool success = int.TryParse(projectIdentifier, out projectId);
+            if (!success)
+            {
+                return new BadRequestObjectResult($"There is no Project with {projectIdentifier} id");
+            }
+
+            tasks = await _db.Tasks
+                .Where(task => task.ProjectId == projectId)
+                .ToListAsync();
             return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
         }
     }
