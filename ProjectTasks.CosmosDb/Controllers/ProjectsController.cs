@@ -28,9 +28,7 @@ namespace ProjectTasks.CosmosDb.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
-        {
-            var allTasks = _db.Tasks.ToList();
-
+       {
             _logger.LogInformation("Get all projects");
             var projects = await _db.Projects.ToListAsync();
             projects.ForEach(project => {
@@ -38,7 +36,7 @@ namespace ProjectTasks.CosmosDb.Controllers
                     .Collection(b => b.Tasks)
                     .Load();
             });
-            return new OkObjectResult(projects);
+            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
         }
     }
 }
