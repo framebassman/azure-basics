@@ -79,13 +79,13 @@ namespace ProjectTasks.Api
                 options.RoutePrefix = string.Empty;
             });
 
-            // using (var scope = app.ApplicationServices.CreateScope())
-            // {
-            //     var services = scope.ServiceProvider;
-            //     var dbContext = services.GetRequiredService<ApplicationContext>();
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<ApplicationContext>();
 
-            //     dbContext.Database.EnsureCreated();
-            // }
+                dbContext.Database.EnsureCreated();
+            }
         }
     }
 }
