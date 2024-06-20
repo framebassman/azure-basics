@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,7 +27,7 @@ namespace ProjectTasks.CosmosDb.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
-       {
+        {
             _logger.LogInformation("Get all projects");
             var projects = await _db.Projects.ToListAsync();
             projects.ForEach(project => {
@@ -36,7 +35,7 @@ namespace ProjectTasks.CosmosDb.Controllers
                     .Collection(b => b.Tasks)
                     .Load();
             });
-            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
+            return new OkObjectResult(projects);
         }
     }
 }
