@@ -35,7 +35,7 @@ namespace ProjectTasks.CosmosDb.Controllers
                     .Collection(b => b.Tasks)
                     .Load();
             });
-            return new OkObjectResult(projects);
+            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
         }
     }
 }
