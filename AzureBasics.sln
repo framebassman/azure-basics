@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Api.Tests.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.CosmosDb", "ProjectTasks.CosmosDb\ProjectTasks.CosmosDb.csproj", "{3915DCAE-A9C0-48C0-A38B-0046262811B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Sync", "ProjectTasks.Sync\ProjectTasks.Sync.csproj", "{6704EF97-67E8-4159-ADA8-13EAD4BCD379}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Sync", "ProjectTasks.Sync\ProjectTasks.Sync.csproj", "{56DA7F60-D00D-4811-AF98-D67E894CCFAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +32,9 @@ Global
 		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3915DCAE-A9C0-48C0-A38B-0046262811B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6704EF97-67E8-4159-ADA8-13EAD4BCD379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6704EF97-67E8-4159-ADA8-13EAD4BCD379}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6704EF97-67E8-4159-ADA8-13EAD4BCD379}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6704EF97-67E8-4159-ADA8-13EAD4BCD379}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56DA7F60-D00D-4811-AF98-D67E894CCFAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56DA7F60-D00D-4811-AF98-D67E894CCFAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56DA7F60-D00D-4811-AF98-D67E894CCFAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56DA7F60-D00D-4811-AF98-D67E894CCFAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

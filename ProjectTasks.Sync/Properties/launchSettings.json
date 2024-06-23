@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ProjectTasks.Sync": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7182",
+      "launchBrowser": false
+    }
+  }
+}

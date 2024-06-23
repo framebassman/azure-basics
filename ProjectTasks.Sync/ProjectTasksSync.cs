@@ -1,20 +1,28 @@
-using Microsoft.Azure.WebJobs;
+using System;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
-namespace ProjectsTasksSync
+namespace ProjectTasks.Sync
 {
-    public class ProjectsTasksSync
+    public class ProjectTasksSync
     {
-        [FunctionName("PopulateCosmosDbFunction")]
-        public async System.Threading.Tasks.Task Run(
-            [TimerTrigger("*/30 * * * * *")]TimerInfo myTimer,
-            ILogger log
-        )
+        private readonly ILogger _logger;
+
+        public ProjectTasksSync(ILogger<ProjectTasksSync> logger)
         {
-            log.LogInformation("Hello, world");
+            _logger = logger;
+        }
+
+        [Function("ProjectTasksSync")]
+        public void Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
+        {
+            _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+
+            if (myTimer.ScheduleStatus is not null)
+            {
+                _logger.LogInformation($"Next timer schedule at: {myTimer.ScheduleStatus.Next}");
+
+            }
         }
     }
 }
