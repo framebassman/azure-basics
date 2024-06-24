@@ -8,3 +8,8 @@ publish-api:
 publish-cosmos:
 	dotnet clean ProjectTasks.CosmosDb/ProjectTasks.CosmosDb.csproj
 	dotnet publish ProjectTasks.CosmosDb/ProjectTasks.CosmosDb.csproj --output ProjectTasks.CosmosDb/bin/Publish
+
+publish-sync:
+	rm -rf ProjectTasks.Sync/bin
+	rm -rf ProjectTasks.Sync/obj
+	dotnet publish ProjectTasks.Sync/ProjectTasks.Sync.csproj --output ProjectTasks.Sync/bin/Publish
