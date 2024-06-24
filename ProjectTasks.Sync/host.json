@@ -41,19 +41,6 @@
           },
           "restrictedToMinimumLevel": "Verbose"
         }
-      },
-      {
-        "Name": "Elasticsearch",
-        "Args":
-        {
-            "nodeUris": "https://kolenka-inc-4135333449.eu-central-1.bonsaisearch.net",
-            "indexFormat": "filebeat-7.10.2-{0:yyyy.MM.dd}",
-            "minimumLogEventLevel": "Information",
-            "connectionGlobalHeaders": "Authorization=Bearer Zm10dWNlcmMwbTpnMXpiZmJqOGx5",
-            "templateName": "projectTasksTemplate",
-            "autoRegisterTemplate": true,
-            "autoRegisterTemplateVersion": "ESv7"
-        }
       }
     ]
   }

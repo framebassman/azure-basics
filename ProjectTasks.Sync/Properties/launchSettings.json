@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ProjectTasks_Sync": {
+    "ProjectTasks.Sync": {
       "commandName": "Project",
       "commandLineArgs": "--port 7218",
       "launchBrowser": false

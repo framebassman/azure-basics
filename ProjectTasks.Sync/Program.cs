@@ -9,7 +9,30 @@ namespace ProjectTasks.Sync
 {
     public class Program
     {
+        private static Serilog.Core.Logger _logger;
+
         public static void Main(string[] args)
+        {
+            _logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(BuildConfiguration())
+                .CreateLogger();
+            try
+            {
+                _logger.Information("Getting started...");
+                var program = new Program();
+                program.Run(args);
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Serilog.Log.CloseAndFlush();
+            }
+        }
+
+        public void Run(string[] args)
         {
             var host = new HostBuilder()
                 .ConfigureFunctionsWebApplication()
@@ -19,11 +42,7 @@ namespace ProjectTasks.Sync
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    Log.Logger = new LoggerConfiguration()
-                        .ReadFrom.Configuration(BuildConfiguration())
-                        .CreateLogger();
-
-                    logging.AddSerilog(Log.Logger, true);
+                    logging.AddSerilog(_logger, true);
                 })
                 .Build();
 
