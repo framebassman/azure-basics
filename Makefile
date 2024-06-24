@@ -13,3 +13,8 @@ publish-sync:
 	rm -rf ProjectTasks.Sync/bin
 	rm -rf ProjectTasks.Sync/obj
 	dotnet publish ProjectTasks.Sync/ProjectTasks.Sync.csproj --output ProjectTasks.Sync/bin/Publish
+
+sync:
+	rm -rf ProjectTasks.Sync/bin
+	rm -rf ProjectTasks.Sync/obj
+	cd ProjectTasks.Sync && func start
