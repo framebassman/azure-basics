@@ -10,9 +10,11 @@ publish-cosmos:
 	dotnet publish ProjectTasks.CosmosDb/ProjectTasks.CosmosDb.csproj --output ProjectTasks.CosmosDb/bin/Publish
 
 publish-sync:
-	rm -rf ProjectTasks.Sync/bin
-	rm -rf ProjectTasks.Sync/obj
-	dotnet publish ProjectTasks.Sync/ProjectTasks.Sync.csproj --output ProjectTasks.Sync/bin/Publish
+	dotnet clean ProjectTasks.Sync/ProjectTasks.Sync.csproj \
+		--configuration Release \
+		--artifacts-path ProjectTasks.Sync/Publish
+	dotnet publish ProjectTasks.Sync/ProjectTasks.Sync.csproj \
+		--output ProjectTasks.Sync/bin/Publish
 
 sync:
 	rm -rf ProjectTasks.Sync/bin
