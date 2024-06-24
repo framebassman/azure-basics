@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Serilog;
-using ProjectTasks.Api.Models;
+using ProjectTasks.CosmosDb.Models;
 
-namespace ProjectTasks.Api
+namespace ProjectTasks.CosmosDb
 {
     public class Startup
     {
@@ -33,10 +33,10 @@ namespace ProjectTasks.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
             services.AddSerilog();
 
@@ -52,10 +52,12 @@ namespace ProjectTasks.Api
             };
             var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
             var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
-            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-cosmosdb-connection-string");
             services.AddDbContext<ApplicationContext>(
-                // options => options.UseInMemoryDatabase("Data")
-                options => options.UseSqlServer(azureSqlConnectionString.Value)
+                options => options.UseCosmos(
+                    azureSqlConnectionString.Value,
+                    "ProjectsTasks"
+                )
             );
         }
 
@@ -78,14 +80,6 @@ namespace ProjectTasks.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationContext>();
-
-                dbContext.Database.EnsureCreated();
-            }
         }
     }
 }
