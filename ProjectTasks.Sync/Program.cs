@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using ProjectTasks.Sync.Model.Sql;
+using ProjectTasks.Sync.Model.CosmosDb;
 
 namespace ProjectTasks.Sync
 {
@@ -42,8 +43,13 @@ namespace ProjectTasks.Sync
                     services.AddApplicationInsightsTelemetryWorkerService();
                     services.ConfigureFunctionsApplicationInsights();
                     services.AddDbContext<SqlContext>(
-                        // options => options.UseInMemoryDatabase("Data")
                         options => options.UseSqlServer(BuildConfiguration().GetConnectionString("Sql"))
+                    );
+                    services.AddDbContext<CosmosDbContext>(
+                        options => options.UseCosmos(
+                            BuildConfiguration().GetConnectionString("CosmosDb"),
+                            "ProjectsTasks"
+                        )
                     );
                 })
                 .ConfigureLogging((hostingContext, logging) =>

@@ -7,7 +7,7 @@ namespace ProjectTasks.Sync.Model.Sql
         public DbSet<UnsyncronizedProject> UnsyncronizedProjects { get; set; }
         public DbSet<UnsyncronizedTask> UnsyncronizedTasks { get; set;}
 
-        public SqlContext(DbContextOptions options) : base(options)
+        public SqlContext(DbContextOptions<SqlContext> options) : base(options)
         {
         }
     }
