@@ -8,5 +8,7 @@ public class MapperProfile : Profile
     {
         CreateMap<Project, ProjectResponse>();
         CreateMap<Task, TaskResponse>();
+        CreateMap<UnsyncronizedProject, ProjectResponse>();
+        CreateMap<UnsyncronizedTask, TaskResponse>();
     }
 }

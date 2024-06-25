@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
 using Task = ProjectTasks.Api.Models.Task;
@@ -29,7 +28,7 @@ public class TasksController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var tasks = await _db.Tasks.ToListAsync();
+        var tasks = await _db.UnsyncronizedTasks.ToListAsync();
         _logger.LogInformation("Get all tasks");
         return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
     }
@@ -38,7 +37,7 @@ public class TasksController : Controller
     public async Task<IActionResult> GetTaskAsync(int id)
     {
         _logger.LogInformation($"Get task with {id} id");
-        var candidate = await _db.Tasks.FirstOrDefaultAsync(task => task.Id == id);
+        var candidate = await _db.UnsyncronizedTasks.FirstOrDefaultAsync(task => task.Id == id);
         if (candidate == null)
         {
             return new NotFoundObjectResult($"There is no Task with {id} id");
@@ -55,19 +54,20 @@ public class TasksController : Controller
             return new BadRequestObjectResult(taskRequest);
         }
 
-        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
+        var candidateProject = await _db.UnsyncronizedProjects
+            .FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
         if (candidateProject == null)
         {
             return new BadRequestObjectResult($"There is no project with {taskRequest.ProjectReferenceId} id");
         }
 
-        var task = new Task
+        var task = new UnsyncronizedTask
         {
             Name = taskRequest.Name,
             Description = taskRequest.Description,
-            Project = candidateProject
+            UnsyncronizedProject = candidateProject
         };
-        await _db.Tasks.AddAsync(task);
+        await _db.UnsyncronizedTasks.AddAsync(task);
         await _db.SaveChangesAsync();
         return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
     }
