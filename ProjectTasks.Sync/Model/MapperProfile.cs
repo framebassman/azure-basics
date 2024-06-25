@@ -1,6 +1,4 @@
 using AutoMapper;
-using ProjectTasks.Sync.Model.CosmosDb;
-using ProjectTasks.Sync.Model.Sql;
 
 namespace ProjectTasks.Sync.Model
 {
@@ -8,10 +6,12 @@ namespace ProjectTasks.Sync.Model
     {
         public MapperProfile()
         {
-            CreateMap<UnsyncronizedProject, CosmosDb.Project>();
-            CreateMap<UnsyncronizedTask, CosmosDb.Task>();
-            CreateMap<UnsyncronizedProject, Sql.Project>();
-            CreateMap<UnsyncronizedTask, Sql.Task>();
+            CreateMap<Sql.UnsyncronizedProject, CosmosDb.Project>();
+            CreateMap<Sql.UnsyncronizedTask, CosmosDb.Task>();
+            CreateMap<Sql.UnsyncronizedProject, Sql.Project>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
+            CreateMap<Sql.UnsyncronizedTask, Sql.Task>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
         }
     }
 }

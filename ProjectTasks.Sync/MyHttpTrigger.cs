@@ -32,72 +32,74 @@ namespace ProjectTasks.Sync
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            _cosmos.Projects.RemoveRange(_cosmos.Projects.ToList());
-            _cosmos.Tasks.RemoveRange(_cosmos.Tasks.ToList());
-            _cosmos.SaveChanges();
-            _sql.Projects.RemoveRange(_sql.Projects.ToList());
-            _sql.Tasks.RemoveRange(_sql.Tasks.ToList());
-            _sql.SaveChanges();
-
+            SetupEnvironment();
             SyncProjects();
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
         public void SyncTasks()
         {
-            // var sqlProjects = _sql.UnsyncronizedProjects.ToList();
-            // _logger.LogInformation("{@sqlProjects}", sqlProjects);
-            // var cosmosProjects = _cosmos.Projects.ToList();
-            // _logger.LogInformation("{@cosmosProjects}", cosmosProjects);
 
-            _logger.LogInformation("Get All unsync tasks");
-            var sqlUnsyncronizedTasks = _sql.UnsyncronizedTasks.ToList();
-
-            _logger.LogInformation("Map to CosmosDb Tasks");
-            var cosmosTasks = _mapper.Map<List<Model.CosmosDb.Task>>(sqlUnsyncronizedTasks);
-            foreach (var task in cosmosTasks)
-            {
-                task.PartitionKey = "Test";
-            }
-            _logger.LogInformation("{@cosmosTasks}", cosmosTasks);
-            _logger.LogInformation("Add Tasks to CosmosDb");
-            _cosmos.Tasks.AddRange(cosmosTasks);
-            _cosmos.SaveChanges();
-
-            _logger.LogInformation("Move unsyncronized tasks to tasks in Sql");
-            var sqlTasks = _mapper.Map<List<Model.Sql.Task>>(sqlUnsyncronizedTasks);
-            _sql.Tasks.AddRange(sqlTasks);
-            _sql.SaveChanges();
-
-            // read project from Unsyncronized projects
-            // insert into CosmosDb
-            // move from Unsyncronized to usual
         }
 
         public void SyncProjects()
         {
-            _logger.LogInformation("Get All unsync projects");
+            _logger.LogInformation("");
+            _logger.LogInformation("Get All unsync projects from SQL");
             var sqlUnsyncProjects = _sql.UnsyncronizedProjects.ToList();
 
-            _logger.LogInformation("Map to CosmosDb Projects");
             var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
             foreach (var project in cosmosProjects)
             {
                 project.PartitionKey = "Test";
             }
-            _logger.LogInformation("{@cosmosProjects}", cosmosProjects);
+            _logger.LogInformation("");
             _logger.LogInformation("Add Projects to CosmosDb");
             _cosmos.Projects.AddRange(cosmosProjects);
             _cosmos.SaveChanges();
 
+            _logger.LogInformation("");
             _logger.LogInformation("Move unsyncronized projects to projects in Sql");
             var sqlProject = _mapper.Map<List<Model.Sql.Project>>(sqlUnsyncProjects);
             _sql.Projects.AddRange(sqlProject);
+            _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
             _sql.SaveChanges();
+        }
 
-            // read project from Unsyncronized projects
-            // insert into CosmosDb
-            // move from Unsyncronized to usual
+        public void SetupEnvironment()
+        {
+            _cosmos.Projects.RemoveRange(_cosmos.Projects.ToList());
+            _cosmos.Tasks.RemoveRange(_cosmos.Tasks.ToList());
+            _cosmos.SaveChanges();
+
+            _sql.Projects.RemoveRange(_sql.Projects.ToList());
+            _sql.Tasks.RemoveRange(_sql.Tasks.ToList());
+            _sql.UnsyncronizedProjects.RemoveRange(_sql.UnsyncronizedProjects.ToList());
+            _sql.UnsyncronizedTasks.RemoveRange(_sql.UnsyncronizedTasks.ToList());
+
+            var projects = new List<UnsyncronizedProject>()
+            {
+                new UnsyncronizedProject
+                {
+                    Name = "Test",
+                    Code = "TST",
+                    Tasks = new List<UnsyncronizedTask>()
+                    {
+                        new UnsyncronizedTask { Name = "TestTask", Description = "TestDesc" }
+                    }
+                },
+                new UnsyncronizedProject
+                {
+                    Name = "Some",
+                    Code = "SM",
+                    Tasks = new List<UnsyncronizedTask>()
+                    {
+                        new UnsyncronizedTask { Name = "SomeTask", Description = "SomeDesc" }
+                    }
+                }
+            };
+            _sql.UnsyncronizedProjects.AddRange(projects);
+            _sql.SaveChanges();
         }
     }
 }
