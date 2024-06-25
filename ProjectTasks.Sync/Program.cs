@@ -40,6 +40,7 @@ namespace ProjectTasks.Sync
             var host = new HostBuilder()
                 .ConfigureFunctionsWebApplication()
                 .ConfigureServices(services => {
+                    services.AddAutoMapper(typeof(Program));
                     services.AddApplicationInsightsTelemetryWorkerService();
                     services.ConfigureFunctionsApplicationInsights();
                     services.AddDbContext<SqlContext>(
