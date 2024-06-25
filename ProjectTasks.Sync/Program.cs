@@ -2,8 +2,10 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
+using ProjectTasks.Sync.Model.Sql;
 
 namespace ProjectTasks.Sync
 {
@@ -39,6 +41,10 @@ namespace ProjectTasks.Sync
                 .ConfigureServices(services => {
                     services.AddApplicationInsightsTelemetryWorkerService();
                     services.ConfigureFunctionsApplicationInsights();
+                    services.AddDbContext<SqlContext>(
+                        // options => options.UseInMemoryDatabase("Data")
+                        options => options.UseSqlServer(BuildConfiguration().GetConnectionString("Sql"))
+                    );
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
