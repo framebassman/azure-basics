@@ -25,8 +25,8 @@ namespace ProjectTasks.Api.Tests.Unit
             _tasksController = fixture.GetService<TasksController>(testOutputHelper);
             _db = fixture.GetService<ApplicationContext>(testOutputHelper);
             _mapper = fixture.GetService<IMapper>(testOutputHelper);
-            _db.Tasks.RemoveRange(_db.Tasks);
-            _db.Projects.RemoveRange(_db.Projects);
+            _db.UnsyncronizedTasks.RemoveRange(_db.UnsyncronizedTasks);
+            _db.UnsyncronizedProjects.RemoveRange(_db.UnsyncronizedProjects);
             _db.SaveChanges();
         }
 
