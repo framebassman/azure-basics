@@ -8,8 +8,10 @@ namespace ProjectTasks.Sync.Model
     {
         public MapperProfile()
         {
-            CreateMap<UnsyncronizedProject, Project>();
+            CreateMap<UnsyncronizedProject, CosmosDb.Project>();
             CreateMap<UnsyncronizedTask, CosmosDb.Task>();
+            CreateMap<UnsyncronizedProject, Sql.Project>();
+            CreateMap<UnsyncronizedTask, Sql.Task>();
         }
     }
 }
