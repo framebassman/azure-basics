@@ -10,15 +10,15 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ProjectTasks.Sync
 {
-    public class MyHttpTrigger
+    public class SyncFunction
     {
-        private readonly ILogger<MyHttpTrigger> _logger;
+        private readonly ILogger<SyncFunction> _logger;
         private IMapper _mapper;
         private SqlContext _sql;
         private CosmosDbContext _cosmos;
 
-        public MyHttpTrigger(
-            ILogger<MyHttpTrigger> logger,
+        public SyncFunction(
+            ILogger<SyncFunction> logger,
             IMapper mapper,
             SqlContext sql,
             CosmosDbContext cosmos
@@ -30,17 +30,24 @@ namespace ProjectTasks.Sync
             _cosmos = cosmos;
         }
 
-        [Function("MyHttpTrigger")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        [Function("SyncFunction")]
+        public async Task<IActionResult> Run([TimerTrigger("0 */30 * * * *")] TimerInfo timerInfo)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            SetupEnvironment();
+            _logger.LogInformation("Start sync");
             return await SyncProjects();
         }
 
+        // [Function("SyncFunction")]
+        // public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        // {
+        //     _logger.LogInformation("C# HTTP trigger function processed a request.");
+        //     SetupEnvironment();
+        //     return await SyncProjects();
+        // }
+
         public async Task<IActionResult> SyncProjects()
         {
-            if (_sql.UnsyncronizedProjects.Count() == 0)
+            if (!_sql.UnsyncronizedProjects.Any())
             {
                 return new OkObjectResult("There is no projects to sync");
             }
