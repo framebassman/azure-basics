@@ -41,41 +41,45 @@ namespace ProjectTasks.Sync
 
         public async Task<IActionResult> SyncProjects()
         {
-            _logger.LogInformation("");
-            _logger.LogInformation("Get All unsync projects from SQL");
-            var sqlUnsyncProjects = await _sql.UnsyncronizedProjects
-                .Include(p => p.Tasks)
-                .ToListAsync();
+            List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
 
-            var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
-            foreach (var project in cosmosProjects)
+            using (var sqlTransaction = _sql.Database.BeginTransaction())
             {
-                project.PartitionKey = "Test";
-                foreach (var task in project.Tasks)
+                _logger.LogInformation("");
+                _logger.LogInformation("Get All unsync projects from SQL");
+                var sqlUnsyncProjects = await _sql.UnsyncronizedProjects
+                    .Include(p => p.Tasks)
+                    .ToListAsync();
+
+                var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
+                foreach (var project in cosmosProjects)
                 {
-                    task.PartitionKey = "Test";
+                    project.PartitionKey = "Test";
+                    foreach (var task in project.Tasks)
+                    {
+                        task.PartitionKey = "Test";
+                    }
                 }
+                var cosmosTasks = cosmosProjects
+                    .SelectMany(p => p.Tasks);
+                _logger.LogInformation("");
+                _logger.LogInformation("Add Projects to CosmosDb");
+                await _cosmos.Projects.AddRangeAsync(cosmosProjects);
+                await _cosmos.Tasks.AddRangeAsync(cosmosTasks);
+                saveChangesResults.Add(_cosmos.SaveChangesAsync());
+
+                _logger.LogInformation("");
+                _logger.LogInformation("Move unsyncronized projects to projects in Sql");
+                var sqlProject = GetProjectsWithTasks(sqlUnsyncProjects);
+                await _sql.Projects.AddRangeAsync(sqlProject);
+                _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
+                saveChangesResults.Add(_sql.SaveChangesAsync());
+
+                var finishedTask = System.Threading.Tasks.Task.WhenAll(saveChangesResults);
+                await finishedTask.ContinueWith(x => { });
+                sqlTransaction.Commit();
+                return new OkResult();
             }
-            var cosmosTasks = cosmosProjects
-                .SelectMany(p => p.Tasks);
-            _logger.LogInformation("");
-            _logger.LogInformation("Add Projects to CosmosDb");
-            await _cosmos.Projects.AddRangeAsync(cosmosProjects);
-            await _cosmos.Tasks.AddRangeAsync(cosmosTasks);
-            System.Threading.Tasks.Task cosmosSaveResult = _cosmos.SaveChangesAsync();
-
-            _logger.LogInformation("");
-            _logger.LogInformation("Move unsyncronized projects to projects in Sql");
-            var sqlProject = GetProjectsWithTasks(sqlUnsyncProjects);
-            await _sql.Projects.AddRangeAsync(sqlProject);
-            _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
-            System.Threading.Tasks.Task sqlSaveResult = _sql.SaveChangesAsync();
-
-            var finishedTask = System.Threading.Tasks.Task.WhenAll(
-                    new List<System.Threading.Tasks.Task> { cosmosSaveResult, sqlSaveResult}
-            );
-            await finishedTask.ContinueWith(x => { });
-            return new OkResult();
         }
 
         public void SetupEnvironment()
