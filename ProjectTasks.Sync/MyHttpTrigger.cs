@@ -41,8 +41,13 @@ namespace ProjectTasks.Sync
 
         public async Task<IActionResult> SyncProjects()
         {
-            List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
+            if (_sql.UnsyncronizedProjects.Count() == 0)
+            {
+                _logger.LogInformation("There is no projects to sync");
+                return new OkResult();
+            }
 
+            List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
             using (var sqlTransaction = _sql.Database.BeginTransaction())
             {
                 _logger.LogInformation("");
