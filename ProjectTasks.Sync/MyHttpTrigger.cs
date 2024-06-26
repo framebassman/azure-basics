@@ -6,6 +6,7 @@ using ProjectTasks.Sync.Model.Sql;
 using ProjectTasks.Sync.Model.CosmosDb;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ProjectTasks.Sync
 {
@@ -30,21 +31,21 @@ namespace ProjectTasks.Sync
         }
 
         [Function("MyHttpTrigger")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             SetupEnvironment();
-            SyncProjects();
+            await SyncProjects();
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-        public void SyncProjects()
+        public async Task<IActionResult> SyncProjects()
         {
             _logger.LogInformation("");
             _logger.LogInformation("Get All unsync projects from SQL");
-            var sqlUnsyncProjects = _sql.UnsyncronizedProjects
+            var sqlUnsyncProjects = await _sql.UnsyncronizedProjects
                 .Include(p => p.Tasks)
-                .ToList();
+                .ToListAsync();
 
             var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
             foreach (var project in cosmosProjects)
@@ -59,25 +60,22 @@ namespace ProjectTasks.Sync
                 .SelectMany(p => p.Tasks);
             _logger.LogInformation("");
             _logger.LogInformation("Add Projects to CosmosDb");
-            _cosmos.Projects.AddRange(cosmosProjects);
-            _cosmos.Tasks.AddRange(cosmosTasks);
-            _cosmos.SaveChanges();
+            await _cosmos.Projects.AddRangeAsync(cosmosProjects);
+            await _cosmos.Tasks.AddRangeAsync(cosmosTasks);
+            System.Threading.Tasks.Task cosmosSaveResult = _cosmos.SaveChangesAsync();
 
             _logger.LogInformation("");
             _logger.LogInformation("Move unsyncronized projects to projects in Sql");
             var sqlProject = GetProjectsWithTasks(sqlUnsyncProjects);
-            _sql.Projects.AddRange(sqlProject);
+            await _sql.Projects.AddRangeAsync(sqlProject);
             _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
-            _sql.SaveChanges();
+            System.Threading.Tasks.Task sqlSaveResult = _sql.SaveChangesAsync();
 
-            // var sqlUnsyncTasks = sqlUnsyncProjects.SelectMany(p => p.Tasks);
-            // var sqlTasks = _mapper.Map<List<Model.Sql.Task>>(sqlUnsyncTasks);
-            // _sql.Tasks.AddRange(sqlTasks);
-
-            // _logger.LogInformation("Remove unsync entities");
-            // _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
-            // // _sql.UnsyncronizedTasks.RemoveRange(sqlUnsyncTasks);
-            // _sql.SaveChanges();
+            var finishedTask = System.Threading.Tasks.Task.WhenAll(
+                    new List<System.Threading.Tasks.Task> { cosmosSaveResult, sqlSaveResult}
+            );
+            await finishedTask.ContinueWith(x => { });
+            return new OkResult();
         }
 
         public void SetupEnvironment()
