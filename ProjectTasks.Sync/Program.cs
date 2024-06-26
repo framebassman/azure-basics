@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Serilog.Events;
 using ProjectTasks.Sync.Model.Sql;
 using ProjectTasks.Sync.Model.CosmosDb;
 
@@ -53,10 +52,10 @@ namespace ProjectTasks.Sync
                         )
                     );
                 })
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddSerilog(_logger, true);
-                })
+                // .ConfigureLogging((hostingContext, logging) =>
+                // {
+                //     logging.AddSerilog(_logger, true);
+                // })
                 .Build();
 
             host.Run();

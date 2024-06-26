@@ -14,5 +14,6 @@ namespace ProjectTasks.Sync.Model.Sql
         public string Name { get; set; }
         public string Description { get; set; }
         public int ProjectReferenceId { get; set; }
+        public Project Project { get; set; }
     }
 }

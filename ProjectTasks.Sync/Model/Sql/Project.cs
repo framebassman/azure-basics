@@ -12,5 +12,7 @@ namespace ProjectTasks.Sync.Model.Sql
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        [ForeignKey("ProjectReferenceId")]
+        public ICollection<Task> Tasks { get; set; }
     }
 }

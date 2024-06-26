@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectTasks.Sync.Model.Sql;
 using ProjectTasks.Sync.Model.CosmosDb;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectTasks.Sync
 {
@@ -37,33 +38,46 @@ namespace ProjectTasks.Sync
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-        public void SyncTasks()
-        {
-
-        }
-
         public void SyncProjects()
         {
             _logger.LogInformation("");
             _logger.LogInformation("Get All unsync projects from SQL");
-            var sqlUnsyncProjects = _sql.UnsyncronizedProjects.ToList();
+            var sqlUnsyncProjects = _sql.UnsyncronizedProjects
+                .Include(p => p.Tasks)
+                .ToList();
 
             var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
             foreach (var project in cosmosProjects)
             {
                 project.PartitionKey = "Test";
+                foreach (var task in project.Tasks)
+                {
+                    task.PartitionKey = "Test";
+                }
             }
+            var cosmosTasks = cosmosProjects
+                .SelectMany(p => p.Tasks);
             _logger.LogInformation("");
             _logger.LogInformation("Add Projects to CosmosDb");
             _cosmos.Projects.AddRange(cosmosProjects);
+            _cosmos.Tasks.AddRange(cosmosTasks);
             _cosmos.SaveChanges();
 
             _logger.LogInformation("");
             _logger.LogInformation("Move unsyncronized projects to projects in Sql");
-            var sqlProject = _mapper.Map<List<Model.Sql.Project>>(sqlUnsyncProjects);
+            var sqlProject = GetProjectsWithTasks(sqlUnsyncProjects);
             _sql.Projects.AddRange(sqlProject);
             _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
             _sql.SaveChanges();
+
+            // var sqlUnsyncTasks = sqlUnsyncProjects.SelectMany(p => p.Tasks);
+            // var sqlTasks = _mapper.Map<List<Model.Sql.Task>>(sqlUnsyncTasks);
+            // _sql.Tasks.AddRange(sqlTasks);
+
+            // _logger.LogInformation("Remove unsync entities");
+            // _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
+            // // _sql.UnsyncronizedTasks.RemoveRange(sqlUnsyncTasks);
+            // _sql.SaveChanges();
         }
 
         public void SetupEnvironment()
@@ -79,27 +93,35 @@ namespace ProjectTasks.Sync
 
             var projects = new List<UnsyncronizedProject>()
             {
-                new UnsyncronizedProject
-                {
-                    Name = "Test",
-                    Code = "TST",
-                    Tasks = new List<UnsyncronizedTask>()
-                    {
-                        new UnsyncronizedTask { Name = "TestTask", Description = "TestDesc" }
-                    }
-                },
-                new UnsyncronizedProject
-                {
-                    Name = "Some",
-                    Code = "SM",
-                    Tasks = new List<UnsyncronizedTask>()
-                    {
-                        new UnsyncronizedTask { Name = "SomeTask", Description = "SomeDesc" }
-                    }
-                }
+                new UnsyncronizedProject { Name = "Test", Code = "TST" },
+                new UnsyncronizedProject { Name = "Some", Code = "SM" }
             };
             _sql.UnsyncronizedProjects.AddRange(projects);
             _sql.SaveChanges();
+
+            projects = _sql.UnsyncronizedProjects.ToList();
+            var tasks = new List<UnsyncronizedTask>()
+            {
+                new UnsyncronizedTask { Name = "SomeTask", Description = "SomeDesc", ProjectReferenceId = projects[0].Id },
+                new UnsyncronizedTask { Name = "TestTask", Description = "TestDesc", ProjectReferenceId = projects[1].Id }
+            };
+            _sql.UnsyncronizedTasks.AddRange(tasks);
+            _sql.SaveChanges();
+        }
+
+        public List<Model.Sql.Project> GetProjectsWithTasks(List<UnsyncronizedProject> unsyncProjects)
+        {
+            List<Model.Sql.Project> result = new List<Model.Sql.Project>();
+            foreach (var project in unsyncProjects)
+            {
+                List<Model.Sql.Task> tasks = new List<Model.Sql.Task>();
+                foreach (var task in project.Tasks)
+                {
+                    tasks.Add(new Model.Sql.Task { Name = task.Name, Description = task.Description });
+                }
+                result.Add(new Model.Sql.Project { Name = project.Name, Code = project.Code, Tasks = tasks });
+            }
+            return result;
         }
     }
 }
