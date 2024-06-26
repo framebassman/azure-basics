@@ -35,16 +35,14 @@ namespace ProjectTasks.Sync
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             SetupEnvironment();
-            await SyncProjects();
-            return new OkObjectResult("Welcome to Azure Functions!");
+            return await SyncProjects();
         }
 
         public async Task<IActionResult> SyncProjects()
         {
             if (_sql.UnsyncronizedProjects.Count() == 0)
             {
-                _logger.LogInformation("There is no projects to sync");
-                return new OkResult();
+                return new OkObjectResult("There is no projects to sync");
             }
 
             List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
@@ -83,7 +81,7 @@ namespace ProjectTasks.Sync
                 var finishedTask = System.Threading.Tasks.Task.WhenAll(saveChangesResults);
                 await finishedTask.ContinueWith(x => { });
                 sqlTransaction.Commit();
-                return new OkResult();
+                return new OkObjectResult("Data was synced successfully");
             }
         }
 
