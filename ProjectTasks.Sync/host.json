@@ -1,12 +1,13 @@
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      },
+      "enableLiveMetricsFilters": true
     }
-  },
-  "AppKeyVault": {
-    "Endpoint": "https://reporting13bjqz1801fzkoi.vault.azure.net/"
   },
   "Serilog": {
     "LevelSwitches": { "controlSwitch": "Verbose" },
@@ -14,12 +15,12 @@
       "Default": "Information",
       "Override": {
         "Microsoft": "Information",
-        "ProjectTasks.Api": "Verbose"
+        "ProjectTasks.Sync": "Verbose"
       }
     },
     "Enrich": ["WithThreadId", "FromLogContext", "WithMachineName", "WithEnvironmentName"],
     "Properties": {
-      "Application": "ProjectTasks.Api"
+      "Application": "ProjectTasks.Sync"
     },
     "WriteTo": [
       {
@@ -31,7 +32,7 @@
               {
                 "Name": "Console",
                 "Args": {
-                  "outputTemplate": "[{Timestamp:o} {Level:u3}] ({Application}/{MachineName}/{ThreadId}) {Message}{NewLine}{Exception}",
+                  "outputTemplate": "[{Level:u3}] ({Application}/{MachineName}/{ThreadId}) {Message}{NewLine}{Exception}",
                   "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console",
                   "formatter": "Serilog.Formatting.Compact.RenderedCompactJsonFormatter,Serilog.Formatting.Compact"
                 }

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
 
@@ -28,19 +31,19 @@ public class ProjectsController
     public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all projects");
-        var projects = await _db.Projects.ToListAsync();
+        var projects = await _db.UnsyncronizedProjects.ToListAsync();
         return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] ProjectRequest projectRequest)
     {
-        var project = new Project
+        var project = new UnsyncronizedProject
         {
             Name = projectRequest.Name,
             Code = projectRequest.Code,
         };
-        await _db.Projects.AddAsync(project);
+        await _db.UnsyncronizedProjects.AddAsync(project);
         await _db.SaveChangesAsync();
         var projectResponse = _mapper.Map<ProjectResponse>(project);
         return new CreatedResult("/projects", projectResponse);
