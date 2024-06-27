@@ -66,7 +66,6 @@ namespace ProjectTasks.Sync
             return new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("host.json", optional: false, reloadOnChange: true)
-                // .AddJsonFile($"appsettings.{CurrentEnv()}.json", optional: true)
                 .AddJsonFile("local.settings.json", optional: true)
                 .AddJsonFile($"{CurrentEnv()}.settings.json", optional: true)
                 .AddEnvironmentVariables()

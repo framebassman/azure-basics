@@ -49,18 +49,6 @@ public class ProjectsController
         return new CreatedResult("/projects", projectResponse);
     }
 
-    [HttpGet("Test")]
-    public async Task<IActionResult> Move()
-    {
-        var unsyncProjects = _db.UnsyncronizedProjects
-            .Include(p => p.UnsyncronizedTasks)
-            .ToList();
-
-        _db.Projects.AddRange(GetProjects(unsyncProjects));
-        _db.SaveChanges();
-        return new OkResult();
-    }
-
     public List<Project> GetProjects(List<UnsyncronizedProject> unsyncProjects)
     {
         List<Project> result = new List<Project>();
