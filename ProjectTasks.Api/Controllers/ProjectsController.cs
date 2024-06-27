@@ -48,19 +48,4 @@ public class ProjectsController
         var projectResponse = _mapper.Map<ProjectResponse>(project);
         return new CreatedResult("/projects", projectResponse);
     }
-
-    public List<Project> GetProjects(List<UnsyncronizedProject> unsyncProjects)
-    {
-        List<Project> result = new List<Project>();
-        foreach (var project in unsyncProjects)
-        {
-            List<Models.Task> tasks = new List<Models.Task>();
-            foreach (var task in project.UnsyncronizedTasks)
-            {
-                tasks.Add(new Models.Task { Name = task.Name, Description = task.Description });
-            }
-            result.Add(new Project { Name = project.Name, Code = project.Code, Tasks = tasks });
-        }
-        return result;
-    }
 }
