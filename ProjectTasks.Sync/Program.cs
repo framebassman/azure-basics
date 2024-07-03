@@ -52,10 +52,6 @@ namespace ProjectTasks.Sync
                         )
                     );
                 })
-                // .ConfigureLogging((hostingContext, logging) =>
-                // {
-                //     logging.AddSerilog(_logger, true);
-                // })
                 .Build();
 
             host.Run();

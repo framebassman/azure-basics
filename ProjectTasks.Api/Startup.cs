@@ -50,12 +50,15 @@ namespace ProjectTasks.Api
                     Mode = RetryMode.Exponential
                 }
             };
-            // var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
-            // var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
-            // KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
+            var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
+            KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
             services.AddDbContext<ApplicationContext>(
                 // options => options.UseInMemoryDatabase("Data")
-                options => options.UseSqlServer(Configuration.GetConnectionString("Default"))
+                // options => options.UseSqlServer(Configuration.GetConnectionString("Default"))
+                options => options.UseSqlServer(
+                    azureSqlConnectionString.Value
+                )
             );
         }
 
