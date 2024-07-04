@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTasks.Api.Controllers;
@@ -17,7 +18,12 @@ namespace ProjectTasks.Api.Tests.Unit
                 .AddTransient<ProjectsController>()
                 .AddTransient<TasksController>()
                 .AddAutoMapper(typeof(Startup))
-                .AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase("Unit"));
+                .AddDbContext<ApplicationContext>(options =>
+                    options
+                        .UseInMemoryDatabase("Unit")
+                        .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+
+                );
 
         protected override ValueTask DisposeAsyncCore() => new ValueTask();
 
