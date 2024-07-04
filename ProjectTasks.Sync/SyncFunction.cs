@@ -69,14 +69,11 @@ namespace ProjectTasks.Sync
                 saveChangesResults.Add(_cosmos.SaveChangesAsync());
 
                 _logger.LogInformation("");
-                _logger.LogInformation("Move unsyncronized projects to projects in Sql");
-                var sqlProjects = _mapper.Map<List<Model.Sql.Project>>(sqlUnsyncProjects);
-                await _sql.Projects.AddRangeAsync(sqlProjects);
+                _logger.LogInformation("Remove projects from unsyncronized table");
                 _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
                 saveChangesResults.Add(_sql.SaveChangesAsync());
 
-                var finishedTask = System.Threading.Tasks.Task.WhenAll(saveChangesResults);
-                await finishedTask.ContinueWith(x => { });
+                await System.Threading.Tasks.Task.WhenAll(saveChangesResults);
                 sqlTransaction.Commit();
                 return new OkObjectResult("Data was synced successfully");
             }
