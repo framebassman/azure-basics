@@ -81,14 +81,6 @@ namespace ProjectTasks.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationContext>();
-
-                dbContext.Database.EnsureCreated();
-            }
         }
     }
 }
