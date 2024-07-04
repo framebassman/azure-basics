@@ -28,7 +28,7 @@ public class TasksController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var tasks = await _db.UnsyncronizedTasks.ToListAsync();
+        var tasks = await _db.Tasks.ToListAsync();
         _logger.LogInformation("Get all tasks");
         return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
     }
@@ -37,7 +37,7 @@ public class TasksController : Controller
     public async Task<IActionResult> GetTaskAsync(int id)
     {
         _logger.LogInformation($"Get task with {id} id");
-        var candidate = await _db.UnsyncronizedTasks.FirstOrDefaultAsync(task => task.Id == id);
+        var candidate = await _db.Tasks.FirstOrDefaultAsync(task => task.Id == id);
         if (candidate == null)
         {
             return new NotFoundObjectResult($"There is no Task with {id} id");
@@ -54,21 +54,37 @@ public class TasksController : Controller
             return new BadRequestObjectResult(taskRequest);
         }
 
-        var candidateProject = await _db.UnsyncronizedProjects
+        var candidateUnsyncronizedProject = await _db.UnsyncronizedProjects
             .FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
-        if (candidateProject == null)
+
+        var candidateProject = await _db.Projects
+            .FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
+        if (candidateProject == null || candidateUnsyncronizedProject == null)
         {
             return new BadRequestObjectResult($"There is no project with {taskRequest.ProjectReferenceId} id");
         }
 
-        var task = new UnsyncronizedTask
+        var unsyncronizedTask = new UnsyncronizedTask
         {
             Name = taskRequest.Name,
             Description = taskRequest.Description,
-            UnsyncronizedProject = candidateProject
+            UnsyncronizedProject = candidateUnsyncronizedProject
         };
-        await _db.UnsyncronizedTasks.AddAsync(task);
-        await _db.SaveChangesAsync();
-        return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
+        var task = new Task
+        {
+            Name = taskRequest.Name,
+            Description = taskRequest.Description,
+            Project = candidateProject
+        };
+
+        await using (var sqlTransaction = await _db.Database.BeginTransactionAsync())
+        {
+            await _db.UnsyncronizedTasks.AddAsync(unsyncronizedTask);
+            await _db.Tasks.AddAsync(task);
+            await _db.SaveChangesAsync();
+            await sqlTransaction.CommitAsync();
+        }
+
+        return new CreatedResult("tasks", _mapper.Map<TaskResponse>(unsyncronizedTask));
     }
 }

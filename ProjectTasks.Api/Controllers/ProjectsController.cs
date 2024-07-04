@@ -26,7 +26,7 @@ public class ProjectsController
     public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all projects");
-        var projects = await _db.UnsyncronizedProjects.ToListAsync();
+        var projects = await _db.Projects.ToListAsync();
         return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
     }
 

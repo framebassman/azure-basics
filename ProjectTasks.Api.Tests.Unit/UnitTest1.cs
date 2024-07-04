@@ -27,6 +27,8 @@ namespace ProjectTasks.Api.Tests.Unit
             _mapper = fixture.GetService<IMapper>(testOutputHelper);
             _db.UnsyncronizedTasks.RemoveRange(_db.UnsyncronizedTasks);
             _db.UnsyncronizedProjects.RemoveRange(_db.UnsyncronizedProjects);
+            _db.Tasks.RemoveRange(_db.Tasks);
+            _db.Projects.RemoveRange(_db.Projects);
             _db.SaveChanges();
         }
 
