@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.Common;
 using ProjectTasks.Tables.WebApi.Controllers;
-using ProjectTasks.Tables.WebApi.Models;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
-using Task = ProjectTasks.Tables.WebApi.Models.Task;
 
 namespace ProjectTasks.Api.Tests.Unit
 {
     public class UnitTest1 : TestBed<Fixture>
     {
         private ProjectsController _projectsController;
-        private TasksController _tasksController;
-        private ApplicationContext _db;
+        private TicketsController _ticketsController;
+        private AzureSqlDbContext _db;
         private IMapper _mapper;
 
         public UnitTest1(ITestOutputHelper testOutputHelper, Fixture fixture) : base(testOutputHelper, fixture)
         {
             _projectsController = fixture.GetService<ProjectsController>(testOutputHelper);
-            _tasksController = fixture.GetService<TasksController>(testOutputHelper);
-            _db = fixture.GetService<ApplicationContext>(testOutputHelper);
+            _ticketsController = fixture.GetService<TicketsController>(testOutputHelper);
+            _db = fixture.GetService<AzureSqlDbContext>(testOutputHelper);
             _mapper = fixture.GetService<IMapper>(testOutputHelper);
             _db.Tasks.RemoveRange(_db.Tasks);
             _db.Projects.RemoveRange(_db.Projects);
@@ -41,7 +41,7 @@ namespace ProjectTasks.Api.Tests.Unit
         [Fact]
         public async void EmptyDb_GetAllTasks_ReturnNothing()
         {
-            var tasks = await _tasksController.GetAllAsync();
+            var tasks = await _ticketsController.GetAllAsync();
             Assert.IsType<OkObjectResult>(tasks);
             Assert.Empty((IEnumerable) ((OkObjectResult) tasks).Value);
         }
@@ -81,8 +81,8 @@ namespace ProjectTasks.Api.Tests.Unit
         [Fact]
         public async void CreateTaskWithoutProject_ReturnBadRequest()
         {
-            var taskRequest = new TaskRequest { Name = "Test", Description = "Desc", ProjectReferenceId = 1 };
-            var createResult = await _tasksController.CreateAsync(taskRequest);
+            var taskRequest = new TicketRequest { Name = "Test", Description = "Desc", ProjectReferenceId = 1 };
+            var createResult = await _ticketsController.CreateAsync(taskRequest);
             Assert.IsType<BadRequestObjectResult>(createResult);
         }
 
@@ -93,21 +93,21 @@ namespace ProjectTasks.Api.Tests.Unit
             var projectResponse = await _projectsController.CreateAsync(projectRequest);
             Assert.IsType<CreatedResult>(projectResponse);
 
-            var taskRequest = new TaskRequest
+            var taskRequest = new TicketRequest
             {
                 Name = "Test",
                 Description = "Desc",
                 ProjectReferenceId = ((ProjectResponse)((CreatedResult)projectResponse).Value).Id
             };
-            var createTaskResult = await _tasksController.CreateAsync(taskRequest);
+            var createTaskResult = await _ticketsController.CreateAsync(taskRequest);
             Assert.IsType<CreatedResult>(createTaskResult);
 
-            var tasks = await _tasksController.GetAllAsync();
+            var tasks = await _ticketsController.GetAllAsync();
             Assert.IsType<OkObjectResult>(tasks);
-            var taskResponses = (IEnumerable<TaskResponse>)((OkObjectResult)tasks).Value;
-            Assert.Equal(taskResponses.First().Name, ((IEnumerable<TaskResponse>) ((OkObjectResult) tasks).Value).First().Name);
-            Assert.Equal(taskResponses.First().Description, ((IEnumerable<TaskResponse>) ((OkObjectResult) tasks).Value).First().Description);
-            Assert.Equal(taskResponses.First().ProjectReferenceId, ((IEnumerable<TaskResponse>) ((OkObjectResult) tasks).Value).First().ProjectReferenceId);
+            var taskResponses = (IEnumerable<TicketResponse>)((OkObjectResult)tasks).Value;
+            Assert.Equal(taskResponses.First().Name, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().Name);
+            Assert.Equal(taskResponses.First().Description, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().Description);
+            Assert.Equal(taskResponses.First().ProjectReferenceId, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().ProjectReferenceId);
         }
     }
 }

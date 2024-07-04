@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ProjectTasks.Tables.WebApi.Models;
+using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.Common;
 
 namespace ProjectTasks.Tables.WebApi.Controllers;
 
@@ -14,10 +13,10 @@ namespace ProjectTasks.Tables.WebApi.Controllers;
 public class ProjectsController
 {
     private ILogger<ProjectsController> _logger;
-    private ApplicationContext _db;
+    private AzureSqlDbContext _db;
     private IMapper _mapper;
 
-    public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext db, IMapper mapper)
+    public ProjectsController(ILogger<ProjectsController> logger, AzureSqlDbContext db, IMapper mapper)
     {
         _logger = logger;
         _db = db;

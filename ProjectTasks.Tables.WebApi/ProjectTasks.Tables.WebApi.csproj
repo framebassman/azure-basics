@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProjectTasks.DataAccess.MySQL\ProjectTasks.DataAccess.MySQL.csproj" />
+      <ProjectReference Include="..\ProjectTasks.DataAccess.AzureSQL\ProjectTasks.DataAccess.AzureSQL.csproj" />
       <ProjectReference Include="..\ProjectTasks.Common\ProjectTasks.Common.csproj" />
     </ItemGroup>
 

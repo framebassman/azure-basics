@@ -1,4 +1,4 @@
-namespace ProjectTasks.Tables.WebApi.Models;
+namespace ProjectTasks.DataAccess.Common;
 
 public class ErrorViewModel
 {

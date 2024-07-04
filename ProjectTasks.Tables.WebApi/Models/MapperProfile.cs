@@ -1,12 +1,12 @@
 using AutoMapper;
 
-namespace ProjectTasks.Tables.WebApi.Models;
+namespace ProjectTasks.DataAccess.Common;
 
 public class MapperProfile : Profile
 {
     public MapperProfile()
     {
         CreateMap<Project, ProjectResponse>();
-        CreateMap<Task, TaskResponse>();
+        CreateMap<Ticket, TicketResponse>();
     }
 }

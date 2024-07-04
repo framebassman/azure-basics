@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ProjectTasks.Tables.WebApi.Models;
+namespace ProjectTasks.DataAccess.Common;
 
-[Table("tasks")]
-public class Task
+[Table("tickets")]
+public class Ticket
 {
     [Column("id")]
     [Key]

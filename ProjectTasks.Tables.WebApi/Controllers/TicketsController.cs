@@ -1,26 +1,22 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
-using ProjectTasks.Tables.WebApi.Models;
-using Models_Task = ProjectTasks.Tables.WebApi.Models.Task;
-using Task = ProjectTasks.Tables.WebApi.Models.Task;
+using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.Common;
 
 namespace ProjectTasks.Tables.WebApi.Controllers;
 
 [Route("[controller]")]
-public class TasksController : Controller
+public class TicketsController : Controller
 {
-    private ILogger<TasksController> _logger;
-    private ApplicationContext _db;
+    private ILogger<TicketsController> _logger;
+    private AzureSqlDbContext _db;
     private IMapper _mapper;
 
-    public TasksController(ILogger<TasksController> logger, ApplicationContext db, IMapper mapper)
+    public TicketsController(ILogger<TicketsController> logger, AzureSqlDbContext db, IMapper mapper)
     {
         _logger = logger;
         _db = db;
@@ -32,7 +28,7 @@ public class TasksController : Controller
     {
         var tasks = await _db.Tasks.ToListAsync();
         _logger.LogInformation("Get all tasks");
-        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+        return new OkObjectResult(_mapper.Map<List<TicketResponse>>(tasks));
     }
 
     [HttpGet("{id}")]
@@ -45,31 +41,31 @@ public class TasksController : Controller
             return new NotFoundObjectResult($"There is no Task with {id} id");
         }
 
-        return new OkObjectResult(_mapper.Map<List<TaskResponse>>(candidate));
+        return new OkObjectResult(_mapper.Map<List<TicketResponse>>(candidate));
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] TaskRequest taskRequest)
+    public async Task<IActionResult> CreateAsync([FromBody] TicketRequest ticketRequest)
     {
         if (!ModelState.IsValid)
         {
-            return new BadRequestObjectResult(taskRequest);
+            return new BadRequestObjectResult(ticketRequest);
         }
 
-        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == taskRequest.ProjectReferenceId);
+        var candidateProject = await _db.Projects.FirstOrDefaultAsync(p => p.Id == ticketRequest.ProjectReferenceId);
         if (candidateProject == null)
         {
-            return new BadRequestObjectResult($"There is no project with {taskRequest.ProjectReferenceId} id");
+            return new BadRequestObjectResult($"There is no project with {ticketRequest.ProjectReferenceId} id");
         }
 
-        var task = new Models_Task
+        var task = new Ticket
         {
-            Name = taskRequest.Name,
-            Description = taskRequest.Description,
+            Name = ticketRequest.Name,
+            Description = ticketRequest.Description,
             Project = candidateProject
         };
         await _db.Tasks.AddAsync(task);
         await _db.SaveChangesAsync();
-        return new CreatedResult("tasks", _mapper.Map<TaskResponse>(task));
+        return new CreatedResult("tickets", _mapper.Map<TicketResponse>(task));
     }
 }

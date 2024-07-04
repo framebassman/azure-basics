@@ -10,10 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
+using ProjectTasks.DataAccess.AzureSQL;
 using Serilog;
-using ProjectTasks.Tables.WebApi.Models;
+using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.Tables.WebApi
+namespace ProjectTasks.DataAccess.Common
 {
     public class Startup
     {
@@ -53,7 +54,7 @@ namespace ProjectTasks.Tables.WebApi
             var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
             var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
             KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-connection-string");
-            services.AddDbContext<ApplicationContext>(
+            services.AddDbContext<AzureSqlDbContext>(
                 // options => options.UseInMemoryDatabase("Data")
                 options => options.UseSqlServer(azureSqlConnectionString.Value)
             );

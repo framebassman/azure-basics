@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Documents.WebA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.Common", "ProjectTasks.DataAccess.Common\ProjectTasks.DataAccess.Common.csproj", "{8CEE8397-107D-41AA-8D51-06BFE9E319C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.MySQL", "ProjectTasks.DataAccess.MySQL\ProjectTasks.DataAccess.MySQL.csproj", "{3162E909-8F76-4A7A-BE9F-3FFB89181F20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.AzureSQL", "ProjectTasks.DataAccess.AzureSQL\ProjectTasks.DataAccess.AzureSQL.csproj", "{3162E909-8F76-4A7A-BE9F-3FFB89181F20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.CosmosDb", "ProjectTasks.DataAccess.CosmosDb\ProjectTasks.DataAccess.CosmosDb.csproj", "{F65D86CE-E7EA-4E22-8CD2-187050505492}"
 EndProject
