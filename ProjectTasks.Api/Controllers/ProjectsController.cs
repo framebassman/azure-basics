@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.Api.Models;
 
@@ -38,14 +33,18 @@ public class ProjectsController
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] ProjectRequest projectRequest)
     {
-        var project = new UnsyncronizedProject
+        var unsyncronizedProject = _mapper.Map<UnsyncronizedProject>(projectRequest);
+        var project = _mapper.Map<Project>(projectRequest);
+
+        await using (var sqlTransaction = await _db.Database.BeginTransactionAsync())
         {
-            Name = projectRequest.Name,
-            Code = projectRequest.Code,
-        };
-        await _db.UnsyncronizedProjects.AddAsync(project);
-        await _db.SaveChangesAsync();
-        var projectResponse = _mapper.Map<ProjectResponse>(project);
+            await _db.UnsyncronizedProjects.AddAsync(unsyncronizedProject);
+            await _db.Projects.AddAsync(project);
+            await _db.SaveChangesAsync();
+            await sqlTransaction.CommitAsync();
+        }
+
+        var projectResponse = _mapper.Map<ProjectResponse>(unsyncronizedProject);
         return new CreatedResult("/projects", projectResponse);
     }
 }
