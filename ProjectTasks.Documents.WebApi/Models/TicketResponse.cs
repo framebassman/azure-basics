@@ -1,6 +1,6 @@
 namespace ProjectTasks.Documents.WebApi.Models
 {
-    public class TaskResponse
+    public class TicketResponse
     {
         public int Id { get; set; }
         public string PartitionKey { get; set; }

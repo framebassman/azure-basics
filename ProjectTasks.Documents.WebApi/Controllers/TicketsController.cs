@@ -1,18 +1,19 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjectTasks.DataAccess.CosmosDb;
 using ProjectTasks.Documents.WebApi.Models;
 
 namespace ProjectTasks.Documents.WebApi.Controllers
 {
     [Route("[controller]")]
-    public class TasksController
+    public class TicketsController
     {
-        private ILogger<TasksController> _logger;
-        private ApplicationContext _db;
+        private ILogger<TicketsController> _logger;
+        private CosmosDbContext _db;
         private IMapper _mapper;
 
-        public TasksController(ILogger<TasksController> logger, ApplicationContext db, IMapper mapper)
+        public TicketsController(ILogger<TicketsController> logger, CosmosDbContext db, IMapper mapper)
         {
             _logger = logger;
             _db = db;
@@ -22,12 +23,11 @@ namespace ProjectTasks.Documents.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery( Name = "projectId")] string projectIdentifier)
         {
-            List<Models.Task> tasks;
             if (string.IsNullOrEmpty(projectIdentifier))
             {
                 _logger.LogInformation("Get all tasks");
-                tasks = await _db.Tasks.ToListAsync();
-                return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+                var allTickets = await _db.Tickets.ToListAsync();
+                return new OkObjectResult(_mapper.Map<List<TicketResponse>>(allTickets));
             }
 
             _logger.LogInformation("Get all tasks for projectId: {@projectId}", projectIdentifier);
@@ -38,10 +38,16 @@ namespace ProjectTasks.Documents.WebApi.Controllers
                 return new BadRequestObjectResult($"There is no Project with {projectIdentifier} id");
             }
 
-            tasks = await _db.Tasks
-                .Where(task => task.ProjectId == projectId)
-                .ToListAsync();
-            return new OkObjectResult(_mapper.Map<List<TaskResponse>>(tasks));
+            var project = _db.Projects
+                .Include(p => p.Tickets)
+                .FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+            {
+                return new BadRequestObjectResult($"There is no Project with {projectIdentifier} id");
+            }
+
+            var tickets = project.Tickets.ToList();
+            return new OkObjectResult(_mapper.Map<List<TicketResponse>>(tickets));
         }
     }
 }

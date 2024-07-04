@@ -1,15 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ProjectTasks.Documents.WebApi.Models;
+namespace ProjectTasks.DataAccess.CosmosDb;
 
-public class ApplicationContext : DbContext
+public class CosmosDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Project> Projects { get; set; }
-    public DbSet<Task> Tasks { get; set; }
-
-    public ApplicationContext(DbContextOptions options) : base(options)
-    {
-    }
+    public DbSet<Ticket> Tickets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,9 +15,9 @@ public class ApplicationContext : DbContext
             .HasPartitionKey(entity => entity.PartitionKey)
             .HasKey(entity => new { entity.Id });
 
-        modelBuilder.Entity<Task>()
+        modelBuilder.Entity<Ticket>()
             .HasNoDiscriminator()
-            .ToContainer(nameof(Tasks))
+            .ToContainer(nameof(Tickets))
             .HasPartitionKey(entity => entity.PartitionKey)
             .HasKey(entity => new { entity.Id });
 

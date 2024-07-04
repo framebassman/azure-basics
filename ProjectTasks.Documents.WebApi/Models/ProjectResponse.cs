@@ -6,6 +6,6 @@ namespace ProjectTasks.Documents.WebApi.Models
         public string PartitionKey { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-        public ICollection<TaskResponse> Tasks { get; set; }
+        public ICollection<TicketResponse> Tickets { get; set; }
     }
 }

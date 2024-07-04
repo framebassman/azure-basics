@@ -1,17 +1,9 @@
-using System;
-using AutoMapper;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Core;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Identity.Web;
+using ProjectTasks.DataAccess.CosmosDb;
 using Serilog;
-using ProjectTasks.Documents.WebApi.Models;
 
 namespace ProjectTasks.Documents.WebApi
 {
@@ -53,7 +45,7 @@ namespace ProjectTasks.Documents.WebApi
             var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
             var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential(), secretClientOptions);
             KeyVaultSecret azureSqlConnectionString = keyVaultClient.GetSecret("reporting-web-api-cosmosdb-connection-string");
-            services.AddDbContext<ApplicationContext>(
+            services.AddDbContext<CosmosDbContext>(
                 options => options.UseCosmos(
                     azureSqlConnectionString.Value,
                     "ProjectsTasks"

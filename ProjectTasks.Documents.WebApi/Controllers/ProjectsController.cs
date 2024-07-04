@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjectTasks.DataAccess.CosmosDb;
 using ProjectTasks.Documents.WebApi.Models;
 
 namespace ProjectTasks.Documents.WebApi.Controllers
@@ -9,10 +10,10 @@ namespace ProjectTasks.Documents.WebApi.Controllers
     public class ProjectsController
     {
         private ILogger<ProjectsController> _logger;
-        private ApplicationContext _db;
+        private CosmosDbContext _db;
         private IMapper _mapper;
 
-        public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext db, IMapper mapper)
+        public ProjectsController(ILogger<ProjectsController> logger, CosmosDbContext db, IMapper mapper)
         {
             _logger = logger;
             _db = db;
@@ -20,25 +21,23 @@ namespace ProjectTasks.Documents.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] bool? withTasks)
+        public async Task<IActionResult> GetAll([FromQuery] bool? withTickets)
         {
-            if (withTasks.HasValue && withTasks.Value)
+            if (withTickets.HasValue && withTickets.Value)
             {
                 _logger.LogInformation("Get all projects with tasks");
-                var projects = await _db.Projects.ToListAsync();
-                projects.ForEach(project => {
+                var projectsWithTickets = await _db.Projects.ToListAsync();
+                projectsWithTickets.ForEach(project => {
                     _db.Entry(project)
-                        .Collection(b => b.Tasks)
+                        .Collection(b => b.Tickets)
                         .Load();
                 });
-                return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
+                return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projectsWithTickets));
             }
-            else
-            {
-                _logger.LogInformation("Get all projects without tasks");
-                var projects = await _db.Projects.ToListAsync();
-                return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
-            }
+
+            _logger.LogInformation("Get all projects without tasks");
+            var projects = await _db.Projects.ToListAsync();
+            return new OkObjectResult(_mapper.Map<List<ProjectResponse>>(projects));
         }
     }
 }
