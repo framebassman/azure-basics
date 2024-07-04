@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace ProjectTasks.DataAccess.Common
+namespace ProjectTasks.Tables.WebApi
 {
     public class Program
     {

@@ -1,20 +1,17 @@
 using System;
-using AutoMapper;
+using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Azure.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Identity.Web;
 using ProjectTasks.DataAccess.AzureSQL;
 using Serilog;
-using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.Common
+namespace ProjectTasks.Tables.WebApi
 {
     public class Startup
     {
@@ -83,7 +80,7 @@ namespace ProjectTasks.DataAccess.Common
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationContext>();
+                var dbContext = services.GetRequiredService<AzureSqlDbContext>();
 
                 dbContext.Database.EnsureCreated();
             }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.Common;
+using ProjectTasks.Tables.WebApi;
 using ProjectTasks.Tables.WebApi.Controllers;
 using Xunit.Microsoft.DependencyInjection;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
