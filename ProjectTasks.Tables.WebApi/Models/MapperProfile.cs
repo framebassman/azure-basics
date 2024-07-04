@@ -1,6 +1,7 @@
 using AutoMapper;
+using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.Common;
+namespace ProjectTasks.Tables.WebApi.Models;
 
 public class MapperProfile : Profile
 {

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.Common;
+using ProjectTasks.Tables.WebApi.Models;
 
 namespace ProjectTasks.Tables.WebApi.Controllers;
 

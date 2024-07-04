@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.Common;
 using ProjectTasks.Tables.WebApi.Controllers;
+using ProjectTasks.Tables.WebApi.Models;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
