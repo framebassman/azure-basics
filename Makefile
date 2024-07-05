@@ -9,6 +9,7 @@ publish-documents:
 	dotnet clean ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj
 	dotnet publish ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj --output ProjectTasks.Documents.WebApi/bin/Publish
 
+# Migrations available on Azure SQL only (https://learn.microsoft.com/en-us/ef/core/providers/cosmos/limitations)
 migrations-azuresql-add-ProjectTasks:
 	dotnet ef \
 		migrations add ProjectTasks \
@@ -17,10 +18,4 @@ migrations-azuresql-add-ProjectTasks:
 		--context AzureSqlDbContext \
 		--verbose
 
-migrations-cosmosdb-add-ProjectTasks:
-	dotnet ef \
-		migrations add ProjectTasks \
-		--project ProjectTasks.DataAccess.CosmosDb/ProjectTasks.DataAccess.CosmosDb.csproj \
-		--startup-project ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj \
-		--context CosmosDbContext \
-		--verbose
+
