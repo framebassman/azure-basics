@@ -76,14 +76,6 @@ namespace ProjectTasks.Tables.WebApi
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<AzureSqlDbContext>();
-
-                dbContext.Database.EnsureCreated();
-            }
         }
     }
 }
