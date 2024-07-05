@@ -9,10 +9,18 @@ publish-documents:
 	dotnet clean ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj
 	dotnet publish ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj --output ProjectTasks.Documents.WebApi/bin/Publish
 
-migrations-add-%:
+migrations-azuresql-add-%:
 	dotnet ef \
 		migrations add $* \
 		--project ProjectTasks.DataAccess.AzureSQL/ProjectTasks.DataAccess.AzureSQL.csproj \
 		--startup-project ProjectTasks.Tables.WebApi/ProjectTasks.Tables.WebApi.csproj \
 		--context AzureSqlDbContext \
+		--verbose
+
+migrations-cosmosdb-add-%:
+	dotnet ef \
+		migrations add $* \
+		--project ProjectTasks.DataAccess.CosmosDb/ProjectTasks.DataAccess.CosmosDb.csproj \
+		--startup-project ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj \
+		--context CosmosDbContext \
 		--verbose

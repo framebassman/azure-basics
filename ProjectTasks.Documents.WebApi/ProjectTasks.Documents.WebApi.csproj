@@ -10,6 +10,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ProjectTasks.DataAccess.CosmosDb\ProjectTasks.DataAccess.CosmosDb.csproj" />
     <ProjectReference Include="..\ProjectTasks.Common\ProjectTasks.Common.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
