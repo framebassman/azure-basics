@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ProjectTasks.DataAccess.Common;
+namespace ProjectTasks.DataAccess.AzureSQL;
 
 [Table("tickets")]
 public class Ticket
@@ -17,3 +17,4 @@ public class Ticket
     [JsonIgnore]
     public Project Project { get; set; }
 }
+

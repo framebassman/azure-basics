@@ -4,7 +4,6 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTasks.DataAccess.AzureSQL;
-using ProjectTasks.DataAccess.Common;
 using ProjectTasks.Tables.WebApi.Controllers;
 using ProjectTasks.Tables.WebApi.Models;
 using Xunit;

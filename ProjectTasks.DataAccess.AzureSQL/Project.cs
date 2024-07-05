@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjectTasks.DataAccess.Common;
+namespace ProjectTasks.DataAccess.AzureSQL;
 
 [Table("projects")]
 public class Project
@@ -16,3 +16,4 @@ public class Project
     [ForeignKey("ProjectReferenceId")]
     public ICollection<Ticket> Tickets { get; set; }
 }
+

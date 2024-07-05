@@ -21,7 +21,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProjectTasks.DataAccess.Common.Project", b =>
+            modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +41,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                     b.ToTable("projects");
                 });
 
-            modelBuilder.Entity("ProjectTasks.DataAccess.Common.Ticket", b =>
+            modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,9 +66,9 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                     b.ToTable("tickets");
                 });
 
-            modelBuilder.Entity("ProjectTasks.DataAccess.Common.Ticket", b =>
+            modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
                 {
-                    b.HasOne("ProjectTasks.DataAccess.Common.Project", "Project")
+                    b.HasOne("ProjectTasks.DataAccess.AzureSQL.Project", "Project")
                         .WithMany("Tickets")
                         .HasForeignKey("ProjectReferenceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -77,7 +77,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("ProjectTasks.DataAccess.Common.Project", b =>
+            modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Project", b =>
                 {
                     b.Navigation("Tickets");
                 });

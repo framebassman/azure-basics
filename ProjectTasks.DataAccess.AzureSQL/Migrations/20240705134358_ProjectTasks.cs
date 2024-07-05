@@ -5,7 +5,7 @@
 namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 {
     /// <inheritdoc />
-    public partial class ProjectTickets : Migration
+    public partial class ProjectTasks : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,5 +1,5 @@
 using AutoMapper;
-using ProjectTasks.DataAccess.Common;
+using ProjectTasks.DataAccess.AzureSQL;
 
 namespace ProjectTasks.Tables.WebApi.Models;
 
