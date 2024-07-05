@@ -11,7 +11,7 @@ using ProjectTasks.DataAccess.AzureSQL;
 namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 {
     [DbContext(typeof(AzureSqlDbContext))]
-    [Migration("20240705134358_ProjectTasks")]
+    [Migration("20240705220250_ProjectTasks")]
     partial class ProjectTasks
     {
         /// <inheritdoc />

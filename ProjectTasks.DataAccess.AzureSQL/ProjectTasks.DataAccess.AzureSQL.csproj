@@ -9,10 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\ProjectTasks.DataAccess.Common\ProjectTasks.DataAccess.Common.csproj" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
     </ItemGroup>
 
 </Project>
