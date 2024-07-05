@@ -10,6 +10,6 @@ public class Project : IProject, IWithPartitionKey
     public int Id { get; set; }
     public string Name { get; set; }
     public string Code { get; set; }
-    public ICollection<ITicket> Tickets { get; set; }
+    public ICollection<Ticket>? Tickets { get; set; }
     public string PartitionKey { get; set; }
 }

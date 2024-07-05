@@ -12,14 +12,12 @@ public class CosmosDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Project>()
             .HasNoDiscriminator()
             .ToContainer(nameof(Projects))
-            .HasPartitionKey(entity => entity.PartitionKey)
-            .HasKey(entity => new { entity.Id });
+            .HasPartitionKey(entity => entity.PartitionKey);
 
         modelBuilder.Entity<Ticket>()
             .HasNoDiscriminator()
             .ToContainer(nameof(Tickets))
-            .HasPartitionKey(entity => entity.PartitionKey)
-            .HasKey(entity => new { entity.Id });
+            .HasPartitionKey(entity => entity.PartitionKey);
 
         base.OnModelCreating(modelBuilder);
     }

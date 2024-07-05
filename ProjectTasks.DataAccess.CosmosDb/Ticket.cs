@@ -10,6 +10,5 @@ public class Ticket : ITicket, IWithPartitionKey
     public string Name { get; set; }
     public string Description { get; set; }
     public int ProjectReferenceId { get; set; }
-    public IProject Project { get; set; }
     public string PartitionKey { get; set; }
 }
