@@ -35,17 +35,19 @@ namespace ProjectTasks.Documents.WebApi.Controllers
             bool success = int.TryParse(projectIdentifier, out projectId);
             if (!success)
             {
-                return new BadRequestObjectResult($"There is no Project with {projectIdentifier} id");
+                return new NotFoundObjectResult($"There is no Project with {projectIdentifier} id");
             }
 
             var project = _db.Projects
-                .Include(p => p.Tickets)
                 .FirstOrDefault(p => p.Id == projectId);
             if (project == null)
             {
-                return new BadRequestObjectResult($"There is no Project with {projectIdentifier} id");
+                return new NotFoundObjectResult($"There is no Project with {projectIdentifier} id");
             }
 
+            await _db.Entry(project)
+                .Collection(b => b.Tickets)
+                .LoadAsync();
             var tickets = project.Tickets.ToList();
             return new OkObjectResult(_mapper.Map<List<TicketResponse>>(tickets));
         }
