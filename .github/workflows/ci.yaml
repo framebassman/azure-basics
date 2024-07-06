@@ -12,3 +12,4 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: dotnet test ProjectTasks.Tables.Tests.Unit
+      - run: dotnet test ProjectTasks.Documents.Tests.Unit

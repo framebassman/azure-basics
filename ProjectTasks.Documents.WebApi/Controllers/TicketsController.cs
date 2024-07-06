@@ -21,7 +21,7 @@ namespace ProjectTasks.Documents.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery( Name = "projectId")] string projectIdentifier)
+        public async Task<IActionResult> GetAllAsync([FromQuery( Name = "projectId")] string projectIdentifier)
         {
             if (string.IsNullOrEmpty(projectIdentifier))
             {

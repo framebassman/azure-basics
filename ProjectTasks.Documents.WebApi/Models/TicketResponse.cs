@@ -6,5 +6,6 @@ namespace ProjectTasks.Documents.WebApi.Models
         public string PartitionKey { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string ProjectReferenceId { get; set; }
     }
 }

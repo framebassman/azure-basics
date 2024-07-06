@@ -21,7 +21,7 @@ namespace ProjectTasks.Documents.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] bool? withTickets)
+        public async Task<IActionResult> GetAllAsync([FromQuery] bool? withTickets)
         {
             if (withTickets.HasValue && withTickets.Value)
             {

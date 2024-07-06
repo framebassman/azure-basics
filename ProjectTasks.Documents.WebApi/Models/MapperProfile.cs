@@ -9,5 +9,7 @@ public class MapperProfile : Profile
     {
         CreateMap<Project, ProjectResponse>();
         CreateMap<Ticket, TicketResponse>();
+        CreateMap<ProjectResponse, Project>();
+        CreateMap<TicketResponse, Ticket>();
     }
 }
