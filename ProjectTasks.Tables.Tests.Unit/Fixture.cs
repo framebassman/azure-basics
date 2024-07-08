@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace ProjectTasks.Api.Tests.Unit
                 .AddTransient<ProjectsController>()
                 .AddTransient<TicketsController>()
                 .AddAutoMapper(typeof(Startup))
-                .AddDbContext<AzureSqlDbContext>(options => options.UseInMemoryDatabase("Unit"));
+                .AddDbContext<AzureSqlDbContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
 
         protected override ValueTask DisposeAsyncCore() => new ValueTask();
 
