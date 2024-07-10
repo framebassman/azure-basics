@@ -31,12 +31,13 @@ public class ProjectsController
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] ProjectRequest projectRequest, CancellationToken token)
     {
+        _logger.LogInformation("Process {@projectRequest}", projectRequest);
         var project = new Project
         {
             Name = projectRequest.Name,
             Code = projectRequest.Code,
         };
-        await _db.CreateProjectAsync(project, token);
+        await _db.CreateAsync(project, token);
         var projectResponse = _mapper.Map<ProjectResponse>(project);
         return new CreatedResult("/projects", projectResponse);
     }

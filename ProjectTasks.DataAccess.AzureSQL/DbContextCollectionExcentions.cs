@@ -8,7 +8,7 @@ public static class DbContextCollectionExtensions
 {
     public static void AddAzureSqlDataProvider(this IServiceCollection services, string connectionString)
     {
-        services.AddTransient<IProjectDataProvider<Project>, AzureSqlProjectDataService>();
+        services.AddTransient<IProjectDataProvider<Project>, AzureSqlDataProvider>();
         services.AddDbContext<AzureSqlDbContext>(
             options => options.UseSqlServer(connectionString)
         );
