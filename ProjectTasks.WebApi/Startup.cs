@@ -40,19 +40,16 @@ namespace ProjectTasks.WebApi
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
             services.AddSerilog();
+            Log.Logger.Information($"StorageType: {Configuration["STORAGE_TYPE"]}");
             if (Configuration["STORAGE_TYPE"] == "AzureSQL")
             {
-                Log.Logger.Information("StorageType: AzureSQL");
                 services.AddAzureSqlDataProvider(RetrieveSecret("reporting-web-api-connection-string"));
             }
             else if (Configuration["STORAGE_TYPE"] == "CosmosDb")
             {
-                Log.Logger.Information("StorageType: CosmosDb");
-                services.AddDbContext<CosmosDbContext>(
-                    options => options.UseCosmos(
-                        RetrieveSecret("reporting-web-api-cosmosdb-connection-string"),
-                        "ProjectsTasks"
-                    )
+                services.AddCosmosDbDataProvider(
+                    RetrieveSecret("reporting-web-api-cosmosdb-connection-string"),
+                    "ProjectsTasks"
                 );
             }
             else

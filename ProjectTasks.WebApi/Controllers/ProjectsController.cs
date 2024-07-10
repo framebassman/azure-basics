@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.Common;
 using ProjectTasks.WebApi.Models;
 
@@ -10,10 +9,10 @@ namespace ProjectTasks.WebApi.Controllers;
 public class ProjectsController
 {
     private ILogger<ProjectsController> _logger;
-    private IProjectDataProvider<Project> _db;
+    private IProjectDataProvider _db;
     private IMapper _mapper;
 
-    public ProjectsController(ILogger<ProjectsController> logger, IProjectDataProvider<Project> db, IMapper mapper)
+    public ProjectsController(ILogger<ProjectsController> logger, IProjectDataProvider db, IMapper mapper)
     {
         _logger = logger;
         _db = db;
@@ -33,12 +32,7 @@ public class ProjectsController
     public async Task<IActionResult> CreateAsync([FromBody] ProjectRequest projectRequest, CancellationToken token)
     {
         _logger.LogInformation("Process {@projectRequest}", projectRequest);
-        var project = new Project
-        {
-            Name = projectRequest.Name,
-            Code = projectRequest.Code,
-        };
-        await _db.CreateAsync(project, token);
+        var project = await _db.CreateProjectAsync(projectRequest.Name, projectRequest.Code, token);
         var projectResponse = _mapper.Map<ProjectResponse>(project);
         return new CreatedResult("/projects", projectResponse);
     }

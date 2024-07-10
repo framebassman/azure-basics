@@ -10,11 +10,11 @@ namespace ProjectTasks.WebApi.Controllers;
 public class TicketsController : Controller
 {
     private ILogger<TicketsController> _logger;
-    private IProjectDataProvider<Project> _projectsDb;
+    private IProjectDataProvider _projectsDb;
     private ITicketDataProvider<Ticket> _ticketsDb;
     private IMapper _mapper;
 
-    public TicketsController(ILogger<TicketsController> logger, IProjectDataProvider<Project> projectsDb, ITicketDataProvider<Ticket> ticketsDb, IMapper mapper)
+    public TicketsController(ILogger<TicketsController> logger, IProjectDataProvider projectsDb, ITicketDataProvider<Ticket> ticketsDb, IMapper mapper)
     {
         _logger = logger;
         _ticketsDb = ticketsDb;
@@ -46,24 +46,25 @@ public class TicketsController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TicketRequest ticketRequest, CancellationToken token)
     {
-        if (!ModelState.IsValid)
-        {
-            return new BadRequestObjectResult(ticketRequest);
-        }
-
-        var candidateProject = await _projectsDb.GetFirstOrDefaultAsync(p => p.Id == ticketRequest.ProjectReferenceId, token);
-        if (candidateProject == null)
-        {
-            return new BadRequestObjectResult($"There is no project with {ticketRequest.ProjectReferenceId} id");
-        }
-
-        var task = new Ticket
-        {
-            Name = ticketRequest.Name,
-            Description = ticketRequest.Description,
-            Project = candidateProject
-        };
-        await _ticketsDb.CreateTicketAsync(task, token);
-        return new CreatedResult("tickets", _mapper.Map<TicketResponse>(task));
+        throw new NotImplementedException();
+        // if (!ModelState.IsValid)
+        // {
+        //     return new BadRequestObjectResult(ticketRequest);
+        // }
+        //
+        // var candidateProject = await _projectsDb.GetFirstOrDefaultProjectAsync(p => p.Id == ticketRequest.ProjectReferenceId, token);
+        // if (candidateProject == null)
+        // {
+        //     return new BadRequestObjectResult($"There is no project with {ticketRequest.ProjectReferenceId} id");
+        // }
+        //
+        // var task = new Ticket
+        // {
+        //     Name = ticketRequest.Name,
+        //     Description = ticketRequest.Description,
+        //     Project = candidateProject
+        // };
+        // await _ticketsDb.CreateTicketAsync(task, token);
+        // return new CreatedResult("tickets", _mapper.Map<TicketResponse>(task));
     }
 }

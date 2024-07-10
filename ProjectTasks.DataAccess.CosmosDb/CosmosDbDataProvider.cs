@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.AzureSQL;
+namespace ProjectTasks.DataAccess.CosmosDb;
 
-public class AzureSqlDataProvider :
+public class CosmosDbDataProvider :
     IProjectDataProvider,
     ITicketDataProvider<Ticket>
 {
-    private AzureSqlDbContext _db;
+    private CosmosDbContext _db;
 
-    public AzureSqlDataProvider(AzureSqlDbContext db)
+    public CosmosDbDataProvider(CosmosDbContext db)
     {
         _db = db;
     }
@@ -27,12 +27,6 @@ public class AzureSqlDataProvider :
     public async Task<IProject> GetFirstOrDefaultProjectAsync(Expression<Func<IProject, bool>> predicate, CancellationToken token)
     {
         return await _db.Projects.FirstOrDefaultAsync(predicate, token);
-    }
-
-    public async Task CreateProjectAsync(Project project, CancellationToken token)
-    {
-        await _db.Projects.AddAsync(project, token);
-        await _db.SaveChangesAsync(token);
     }
 
     public async Task<IProject> CreateProjectAsync(string name, string code, CancellationToken token)
@@ -49,17 +43,17 @@ public class AzureSqlDataProvider :
 
     public async Task<IEnumerable<Ticket>> GetAllTicketsAsync(CancellationToken token)
     {
-        return await _db.Tasks.ToListAsync(token);
+        return await _db.Tickets.ToListAsync(token);
     }
 
     public async Task<Ticket> GetFirstOrDefaultAsync(Expression<Func<Ticket, bool>> predicate, CancellationToken token)
     {
-        return await _db.Tasks.FirstOrDefaultAsync(predicate, token);
+        return await _db.Tickets.FirstOrDefaultAsync(predicate, token);
     }
 
     public async Task CreateTicketAsync(Ticket ticket, CancellationToken token)
     {
-        await _db.Tasks.AddAsync(ticket, token);
+        await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
     }
 }

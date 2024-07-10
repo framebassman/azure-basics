@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectTasks.DataAccess.Common;
 
-public interface IProjectDataProvider<T> where T : IProject
+public interface IProjectDataProvider
 {
-    Task<IEnumerable<T>> GetAllProjectsAsync(CancellationToken token);
-    Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken token);
-    Task CreateAsync(T candidate, CancellationToken token);
+    Task<IEnumerable<IProject>> GetAllProjectsAsync(CancellationToken token);
+    Task<IProject> GetFirstOrDefaultProjectAsync(Expression<Func<IProject, bool>> predicate, CancellationToken token);
+    Task<IProject> CreateProjectAsync(string name, string code, CancellationToken token);
 }

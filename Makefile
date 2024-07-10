@@ -2,6 +2,19 @@ publish-tables:
 	dotnet clean ProjectTasks.Tables.WebApi/ProjectTasks.Tables.WebApi.csproj
 	dotnet publish ProjectTasks.Tables.WebApi/ProjectTasks.Tables.WebApi.csproj --output ProjectTasks.Tables.WebApi/bin/Publish
 
+run-azuresql:
+	dotnet clean ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
+		dotnet run \
+		--launch-profile "AzureSQL" \
+		--project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
+
+
+run-cosmosdb:
+	dotnet clean ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
+		dotnet run \
+		--launch-profile "CosmosDb" \
+		--project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
+
 publish-documents:
 	dotnet clean ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj
 	dotnet publish ProjectTasks.Documents.WebApi/ProjectTasks.Documents.WebApi.csproj --output ProjectTasks.Documents.WebApi/bin/Publish
