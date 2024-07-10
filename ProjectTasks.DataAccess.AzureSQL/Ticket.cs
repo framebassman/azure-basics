@@ -5,7 +5,7 @@ using ProjectTasks.DataAccess.Common;
 
 namespace ProjectTasks.DataAccess.AzureSQL;
 
-[Table("tickets")]
+[Table("tasks")]
 public class Ticket : ITicket
 {
     [Column("id")]
