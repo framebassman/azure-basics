@@ -3,6 +3,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.CosmosDb;
 using Serilog;
 
 namespace ProjectTasks.WebApi
@@ -42,15 +43,16 @@ namespace ProjectTasks.WebApi
             if (Configuration["StorageType"] == "AzureSQL")
             {
                 Log.Logger.Information("StorageType: AzureSQL");
-                services.AddDbContext<AzureSqlDbContext>(
-                    options => options.UseSqlServer(AzureSQLConnectionString())
-                );
+                services.AddAzureSqlDataProvider(RetrieveSecret("reporting-web-api-connection-string"));
             }
             else if (Configuration["StorageType"] == "CosmosDb")
             {
                 Log.Logger.Information("StorageType: CosmosDb");
-                services.AddDbContext<AzureSqlDbContext>(
-                    options => options.UseSqlServer(AzureSQLConnectionString())
+                services.AddDbContext<CosmosDbContext>(
+                    options => options.UseCosmos(
+                        RetrieveSecret("reporting-web-api-cosmosdb-connection-string"),
+                        "ProjectsTasks"
+                    )
                 );
             }
             else
@@ -83,17 +85,12 @@ namespace ProjectTasks.WebApi
             });
         }
 
-        private string AzureSQLConnectionString()
+        private string RetrieveSecret(string secretKey)
         {
             var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
             var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), _azureCredentials, _secretClientOptions);
-            KeyVaultSecret secret = keyVaultClient.GetSecret("reporting-web-api-connection-string");
+            KeyVaultSecret secret = keyVaultClient.GetSecret(secretKey);
             return secret.Value;
-        }
-
-        private string CosmosDbConnectionString()
-        {
-            return "";
         }
     }
 }

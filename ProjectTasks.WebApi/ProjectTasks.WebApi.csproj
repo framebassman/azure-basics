@@ -9,7 +9,16 @@
   <ItemGroup>
     <ProjectReference Include="..\ProjectTasks.DataAccess.CosmosDb\ProjectTasks.DataAccess.CosmosDb.csproj" />
     <ProjectReference Include="..\ProjectTasks.DataAccess.AzureSQL\ProjectTasks.DataAccess.AzureSQL.csproj" />
-    <ProjectReference Include="..\ProjectTasks.Common\ProjectTasks.Common.csproj" />
+    <PackageReference Include="Azure.Identity" Version="1.12.0-beta.2" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.0.0-preview1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.2.0-dev-00752" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="2.0.0" />
+    <PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.4.1" />
   </ItemGroup>
 
 </Project>
