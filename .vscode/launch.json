@@ -5,14 +5,14 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-            "name": "ProjectTasks Api",
+            "name": "AzureSQL WebApi",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ProjectTasks.Api/bin/Debug/net8.0/ProjectTasks.Api.dll",
+            "program": "${workspaceFolder}/ProjectTasks.WebApi/bin/Debug/net8.0/ProjectTasks.WebApi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/ProjectTasks.Api",
+            "cwd": "${workspaceFolder}/ProjectTasks.WebApi",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -20,7 +20,8 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "STORAGE_TYPE": "AzureSQL"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
@@ -30,14 +31,14 @@
           // Use IntelliSense to find out which attributes exist for C# debugging
           // Use hover for the description of the existing attributes
           // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-          "name": "ProjectTasks CosmosDb",
+          "name": "CosmosDb WebApi",
           "type": "coreclr",
           "request": "launch",
           "preLaunchTask": "build",
           // If you have changed target frameworks, make sure to update the program path.
-          "program": "${workspaceFolder}/ProjectTasks.CosmosDb/bin/Debug/net8.0/ProjectTasks.CosmosDb.dll",
+          "program": "${workspaceFolder}/ProjectTasks.WebApi/bin/Debug/net8.0/ProjectTasks.WebApi.dll",
           "args": [],
-          "cwd": "${workspaceFolder}/ProjectTasks.CosmosDb",
+          "cwd": "${workspaceFolder}/ProjectTasks.WebApi",
           "stopAtEntry": false,
           // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
           "serverReadyAction": {
@@ -45,7 +46,8 @@
               "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
           },
           "env": {
-              "ASPNETCORE_ENVIRONMENT": "Development"
+              "ASPNETCORE_ENVIRONMENT": "Development",
+              "STORAGE_TYPE": "CosmosDb"
           },
           "sourceFileMap": {
               "/Views": "${workspaceFolder}/Views"

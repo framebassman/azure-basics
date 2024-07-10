@@ -25,7 +25,8 @@ public class ProjectsController
     {
         _logger.LogInformation("Get all projects");
         var projects = await _db.GetAllProjectsAsync(token);
-        return new OkObjectResult(projects);
+        var projectResponse = _mapper.Map<IEnumerable<ProjectResponse>>(projects);
+        return new OkObjectResult(projectResponse);
     }
 
     [HttpPost]

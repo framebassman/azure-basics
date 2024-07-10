@@ -9,14 +9,26 @@
     }
   },
   "profiles": {
-    "http": {
+    "AzureSQL": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5156",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "STORAGE_TYPE": "AzureSQL"
+      }
+    },
+    "CosmosDb": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5156",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "STORAGE_TYPE": "CosmosDb"
       }
     },
     "IIS Express": {
