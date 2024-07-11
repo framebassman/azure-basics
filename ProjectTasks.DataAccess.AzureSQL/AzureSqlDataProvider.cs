@@ -29,12 +29,6 @@ public class AzureSqlDataProvider :
         return await _db.Projects.FirstOrDefaultAsync(predicate, token);
     }
 
-    public async Task CreateProjectAsync(Project project, CancellationToken token)
-    {
-        await _db.Projects.AddAsync(project, token);
-        await _db.SaveChangesAsync(token);
-    }
-
     public async Task<IProject> CreateProjectAsync(string name, string code, CancellationToken token)
     {
         var toDb = new Project

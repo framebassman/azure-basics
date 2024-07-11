@@ -11,7 +11,7 @@ using ProjectTasks.DataAccess.AzureSQL;
 namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 {
     [DbContext(typeof(AzureSqlDbContext))]
-    [Migration("20240705220250_ProjectTasks")]
+    [Migration("20240711095337_ProjectTasks")]
     partial class ProjectTasks
     {
         /// <inheritdoc />
@@ -66,7 +66,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasIndex("ProjectReferenceId");
 
-                    b.ToTable("tickets");
+                    b.ToTable("tasks");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>

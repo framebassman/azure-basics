@@ -63,7 +63,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasIndex("ProjectReferenceId");
 
-                    b.ToTable("tickets");
+                    b.ToTable("tasks");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>

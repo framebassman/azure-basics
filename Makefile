@@ -21,9 +21,9 @@ publish-documents:
 
 # Migrations not available for CosmosDb (https://learn.microsoft.com/en-us/ef/core/providers/cosmos/limitations)
 migrations-azuresql-add-ProjectTasks:
-	dotnet ef \
+	STORAGE_TYPE=AzureSQL dotnet ef \
 		migrations add ProjectTasks \
 		--project ProjectTasks.DataAccess.AzureSQL/ProjectTasks.DataAccess.AzureSQL.csproj \
-		--startup-project ProjectTasks.Tables.WebApi/ProjectTasks.Tables.WebApi.csproj \
+		--startup-project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj \
 		--context AzureSqlDbContext \
 		--verbose

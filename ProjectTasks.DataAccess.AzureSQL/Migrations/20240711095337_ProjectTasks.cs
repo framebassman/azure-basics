@@ -25,7 +25,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tickets",
+                name: "tasks",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
@@ -36,9 +36,9 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tickets", x => x.id);
+                    table.PrimaryKey("PK_tasks", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tickets_projects_ProjectReferenceId",
+                        name: "FK_tasks_projects_ProjectReferenceId",
                         column: x => x.ProjectReferenceId,
                         principalTable: "projects",
                         principalColumn: "id",
@@ -46,8 +46,8 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tickets_ProjectReferenceId",
-                table: "tickets",
+                name: "IX_tasks_ProjectReferenceId",
+                table: "tasks",
                 column: "ProjectReferenceId");
         }
 
@@ -55,7 +55,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tickets");
+                name: "tasks");
 
             migrationBuilder.DropTable(
                 name: "projects");
