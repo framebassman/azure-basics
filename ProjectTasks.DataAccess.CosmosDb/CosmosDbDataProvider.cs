@@ -34,7 +34,8 @@ public class CosmosDbDataProvider :
         var toDb = new Project
         {
             Name = name,
-            Code = code
+            Code = code,
+            PartitionKey = "Test"
         };
         var entity = await _db.Projects.AddAsync(toDb, token);
         await _db.SaveChangesAsync(token);
@@ -57,6 +58,7 @@ public class CosmosDbDataProvider :
         {
             Name = name,
             Description = description,
+            PartitionKey = "Test",
             ProjectReferenceId = projectReferenceId
         };
         var entry = await _db.Tickets.AddAsync(ticket, token);
