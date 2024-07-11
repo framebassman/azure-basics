@@ -9,7 +9,7 @@ public static class DbContextCollectionExtensions
     public static void AddCosmosDbDataProvider(this IServiceCollection services, string connectionString, string databaseName)
     {
         services.AddTransient<IProjectDataProvider, CosmosDbDataProvider>();
-        services.AddTransient<ITicketDataProvider<Ticket>, CosmosDbDataProvider>();
+        services.AddTransient<ITicketDataProvider, CosmosDbDataProvider>();
         services.AddDbContext<CosmosDbContext>(
             options => options.UseCosmos(connectionString, databaseName)
         );

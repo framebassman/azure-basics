@@ -10,5 +10,5 @@ public interface ITicketDataProvider
 {
     Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token);
     Task<ITicket> GetFirstOrDefaultAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token);
-    Task CreateTicketAsync(ITicket candidate, CancellationToken token);
+    Task<ITicket> CreateTicketAsync(string name, string description, int projectReferenceId, CancellationToken token);
 }

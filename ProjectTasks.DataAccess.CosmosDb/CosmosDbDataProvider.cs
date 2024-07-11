@@ -10,7 +10,7 @@ namespace ProjectTasks.DataAccess.CosmosDb;
 
 public class CosmosDbDataProvider :
     IProjectDataProvider,
-    ITicketDataProvider<Ticket>
+    ITicketDataProvider
 {
     private CosmosDbContext _db;
 
@@ -41,19 +41,26 @@ public class CosmosDbDataProvider :
         return entity.Entity;
     }
 
-    public async Task<IEnumerable<Ticket>> GetAllTicketsAsync(CancellationToken token)
+    public async Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token)
     {
         return await _db.Tickets.ToListAsync(token);
     }
 
-    public async Task<Ticket> GetFirstOrDefaultAsync(Expression<Func<Ticket, bool>> predicate, CancellationToken token)
+    public async Task<ITicket> GetFirstOrDefaultAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
     {
         return await _db.Tickets.FirstOrDefaultAsync(predicate, token);
     }
 
-    public async Task CreateTicketAsync(Ticket ticket, CancellationToken token)
+    public async Task<ITicket> CreateTicketAsync(string name, string description, int projectReferenceId, CancellationToken token)
     {
-        await _db.Tickets.AddAsync(ticket, token);
+        var ticket = new Ticket
+        {
+            Name = name,
+            Description = description,
+            ProjectReferenceId = projectReferenceId
+        };
+        var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
+        return entry.Entity;
     }
 }

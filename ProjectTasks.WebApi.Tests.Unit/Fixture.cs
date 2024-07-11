@@ -20,7 +20,7 @@ namespace ProjectTasks.WebApi.Tests.Unit
                 .AddTransient<TicketsController>()
                 .AddAutoMapper(typeof(Startup))
                 .AddTransient<IProjectDataProvider, AzureSqlDataProvider>()
-                .AddTransient<ITicketDataProvider<Ticket>, AzureSqlDataProvider>()
+                .AddTransient<ITicketDataProvider, AzureSqlDataProvider>()
                 .AddDbContext<AzureSqlDbContext>(
                     options => options.UseInMemoryDatabase(Guid.NewGuid().ToString())
                 );

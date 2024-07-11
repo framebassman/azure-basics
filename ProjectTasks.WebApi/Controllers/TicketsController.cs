@@ -45,25 +45,18 @@ public class TicketsController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TicketRequest ticketRequest, CancellationToken token)
     {
-        throw new NotImplementedException();
-        // if (!ModelState.IsValid)
-        // {
-        //     return new BadRequestObjectResult(ticketRequest);
-        // }
-        //
-        // var candidateProject = await _projectsDb.GetFirstOrDefaultProjectAsync(p => p.Id == ticketRequest.ProjectReferenceId, token);
-        // if (candidateProject == null)
-        // {
-        //     return new BadRequestObjectResult($"There is no project with {ticketRequest.ProjectReferenceId} id");
-        // }
-        //
-        // var task = new Ticket
-        // {
-        //     Name = ticketRequest.Name,
-        //     Description = ticketRequest.Description,
-        //     Project = candidateProject
-        // };
-        // await _ticketsDb.CreateTicketAsync(task, token);
-        // return new CreatedResult("tickets", _mapper.Map<TicketResponse>(task));
+        if (!ModelState.IsValid)
+        {
+            return new BadRequestObjectResult(ticketRequest);
+        }
+
+        var candidateProject = await _projectsDb.GetFirstOrDefaultProjectAsync(p => p.Id == ticketRequest.ProjectReferenceId, token);
+        if (candidateProject == null)
+        {
+            return new BadRequestObjectResult($"There is no project with {ticketRequest.ProjectReferenceId} id");
+        }
+
+        var ticket = await _ticketsDb.CreateTicketAsync(ticketRequest.Name, ticketRequest.Description, ticketRequest.ProjectReferenceId, token);
+        return new CreatedResult("tickets", _mapper.Map<TicketResponse>(ticket));
     }
 }

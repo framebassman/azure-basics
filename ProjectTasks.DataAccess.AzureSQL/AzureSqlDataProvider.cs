@@ -57,9 +57,16 @@ public class AzureSqlDataProvider :
         return await _db.Tasks.FirstOrDefaultAsync(predicate, token);
     }
 
-    public async Task CreateTicketAsync(ITicket ticket, CancellationToken token)
+    public async Task<ITicket> CreateTicketAsync(string name, string description, int projectReferenceId, CancellationToken token)
     {
-        // await _db.Tasks.AddAsync(ticket, token);
+        var ticket = new Ticket
+        {
+            Name = name,
+            Description = description,
+            ProjectReferenceId = projectReferenceId
+        };
+        var entry = await _db.Tasks.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
+        return entry.Entity;
     }
 }
