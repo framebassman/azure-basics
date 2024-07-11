@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectTasks.DataAccess.Common;
 
-public interface ITicketDataProvider<T> where T : ITicket
+public interface ITicketDataProvider
 {
-    Task<IEnumerable<T>> GetAllTicketsAsync(CancellationToken token);
-    Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken token);
-    Task CreateTicketAsync(T candidate, CancellationToken token);
+    Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token);
+    Task<ITicket> GetFirstOrDefaultAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token);
+    Task CreateTicketAsync(ITicket candidate, CancellationToken token);
 }

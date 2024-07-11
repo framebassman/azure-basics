@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.Common;
 using ProjectTasks.WebApi.Models;
 
@@ -11,10 +10,10 @@ public class TicketsController : Controller
 {
     private ILogger<TicketsController> _logger;
     private IProjectDataProvider _projectsDb;
-    private ITicketDataProvider<Ticket> _ticketsDb;
+    private ITicketDataProvider _ticketsDb;
     private IMapper _mapper;
 
-    public TicketsController(ILogger<TicketsController> logger, IProjectDataProvider projectsDb, ITicketDataProvider<Ticket> ticketsDb, IMapper mapper)
+    public TicketsController(ILogger<TicketsController> logger, IProjectDataProvider projectsDb, ITicketDataProvider ticketsDb, IMapper mapper)
     {
         _logger = logger;
         _ticketsDb = ticketsDb;
