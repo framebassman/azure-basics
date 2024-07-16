@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.CosmosDb;
+namespace ProjectTasks.DataAccess.CosmosDb; 
 
 public class CosmosDbDataProvider :
     IProjectDataProvider,
@@ -17,6 +17,7 @@ public class CosmosDbDataProvider :
     public CosmosDbDataProvider(CosmosDbContext db)
     {
         _db = db;
+        _db.Database.EnsureCreated();
     }
 
     public async Task<IEnumerable<IProject>> GetAllProjectsAsync(CancellationToken token)
