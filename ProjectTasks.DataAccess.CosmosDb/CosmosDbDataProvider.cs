@@ -31,8 +31,10 @@ public class CosmosDbDataProvider :
 
     public async Task<IProject> CreateProjectAsync(string name, string code, CancellationToken token)
     {
+        var count = await _db.Projects.CountAsync(token);
         var toDb = new Project
         {
+            Id = count + 1,
             Name = name,
             Code = code,
             PartitionKey = "Test"
@@ -54,8 +56,10 @@ public class CosmosDbDataProvider :
 
     public async Task<ITicket> CreateTicketAsync(string name, string description, int projectReferenceId, CancellationToken token)
     {
+        var count = await _db.Tickets.CountAsync(token);
         var ticket = new Ticket
         {
+            Id = count + 1,
             Name = name,
             Description = description,
             PartitionKey = "Test",

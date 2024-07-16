@@ -39,7 +39,7 @@ public class TicketsController : Controller
             return new NotFoundObjectResult($"There is no Task with {id} id");
         }
 
-        return new OkObjectResult(_mapper.Map<List<TicketResponse>>(candidate));
+        return new OkObjectResult(_mapper.Map<TicketResponse>(candidate));
     }
 
     [HttpPost]
