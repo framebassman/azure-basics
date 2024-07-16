@@ -54,10 +54,8 @@ namespace ProjectTasks.WebApi
             }
             else
             {
-                Log.Logger.Information("StorageType: InMemoryDatabase");
-                services.AddDbContext<AzureSqlDbContext>(
-                    options => options.UseInMemoryDatabase("Data")
-                );
+                Log.Logger.Error("Unknown STORAGE_TYPE configuration");
+                throw new Exception("Please, define STORAGE_TYPE by environment variables or Asp Net Core Configuration. Application supports AzureSQL and CosmosDB storage types.");
             }
         }
 
