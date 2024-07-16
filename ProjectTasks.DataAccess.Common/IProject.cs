@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace ProjectTasks.DataAccess.Common;
 
 public interface IProject

@@ -43,12 +43,12 @@ public class AzureSqlDataProvider :
 
     public async Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token)
     {
-        return await _db.Tasks.ToListAsync(token);
+        return await _db.Tickets.ToListAsync(token);
     }
 
     public async Task<ITicket> GetFirstOrDefaultAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
     {
-        return await _db.Tasks.FirstOrDefaultAsync(predicate, token);
+        return await _db.Tickets.FirstOrDefaultAsync(predicate, token);
     }
 
     public async Task<ITicket> CreateTicketAsync(string name, string description, int projectReferenceId, CancellationToken token)
@@ -59,7 +59,7 @@ public class AzureSqlDataProvider :
             Description = description,
             ProjectReferenceId = projectReferenceId
         };
-        var entry = await _db.Tasks.AddAsync(ticket, token);
+        var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
         return entry.Entity;
     }

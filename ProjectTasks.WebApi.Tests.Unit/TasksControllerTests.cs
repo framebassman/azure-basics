@@ -26,7 +26,7 @@ public class TasksControllerTests : TestBed<Fixture>
         _ticketsController = fixture.GetService<TicketsController>(testOutputHelper);
         _db = fixture.GetService<AzureSqlDbContext>(testOutputHelper);
         _mapper = fixture.GetService<IMapper>(testOutputHelper);
-        _db.Tasks.RemoveRange(_db.Tasks);
+        _db.Tickets.RemoveRange(_db.Tickets);
         _db.Projects.RemoveRange(_db.Projects);
         _db.SaveChanges();
     }

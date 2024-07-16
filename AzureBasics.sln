@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.Azu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.DataAccess.CosmosDb", "ProjectTasks.DataAccess.CosmosDb\ProjectTasks.DataAccess.CosmosDb.csproj", "{F65D86CE-E7EA-4E22-8CD2-187050505492}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Common", "ProjectTasks.Common\ProjectTasks.Common.csproj", "{93093DFE-35AD-4E70-8175-4119C2A2C5B6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.WebApi", "ProjectTasks.WebApi\ProjectTasks.WebApi.csproj", "{0DCD9EF5-70B1-4702-9C05-FBD74CD498FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.WebApi.Tests.Unit", "ProjectTasks.WebApi.Tests.Unit\ProjectTasks.WebApi.Tests.Unit.csproj", "{349D0ECF-3BC9-4EF0-9F81-43DEFA6E3075}"
@@ -36,10 +34,6 @@ Global
 		{F65D86CE-E7EA-4E22-8CD2-187050505492}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65D86CE-E7EA-4E22-8CD2-187050505492}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F65D86CE-E7EA-4E22-8CD2-187050505492}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93093DFE-35AD-4E70-8175-4119C2A2C5B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93093DFE-35AD-4E70-8175-4119C2A2C5B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93093DFE-35AD-4E70-8175-4119C2A2C5B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93093DFE-35AD-4E70-8175-4119C2A2C5B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0DCD9EF5-70B1-4702-9C05-FBD74CD498FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0DCD9EF5-70B1-4702-9C05-FBD74CD498FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DCD9EF5-70B1-4702-9C05-FBD74CD498FC}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace ProjectTasks.DataAccess.Common;
 
 public interface ITicket
