@@ -1,6 +1,6 @@
-namespace ProjectTasks.DataAccess.Common;
+namespace ProjectTasks.WebApi.Models;
 
-public interface IProject
+public class ProjectResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }

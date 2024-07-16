@@ -1,6 +1,6 @@
-namespace ProjectTasks.DataAccess.Common;
+namespace ProjectTasks.WebApi.Models;
 
-public interface ITicket
+public class TicketResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }
