@@ -12,24 +12,11 @@ namespace ProjectTasks.WebApi
     {
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
-        private SecretClientOptions _secretClientOptions;
-        private TokenCredential _azureCredentials;
 
         public Startup(IWebHostEnvironment env)
         {
             Environment = env;
             Configuration = Program.BuildConfiguration();
-            _secretClientOptions = new SecretClientOptions
-            {
-                Retry =
-                {
-                    Delay= TimeSpan.FromSeconds(2),
-                    MaxDelay = TimeSpan.FromSeconds(16),
-                    MaxRetries = 5,
-                    Mode = RetryMode.Exponential
-                }
-            };
-            _azureCredentials = new DefaultAzureCredential();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -40,23 +27,10 @@ namespace ProjectTasks.WebApi
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
             services.AddSerilog();
-            Log.Logger.Information($"StorageType: {Configuration["STORAGE_TYPE"]}");
-            if (Configuration["STORAGE_TYPE"] == "AzureSQL")
-            {
-                services.AddAzureSqlDataProvider(RetrieveSecret("reporting-web-api-connection-string"));
-            }
-            else if (Configuration["STORAGE_TYPE"] == "CosmosDb")
-            {
-                services.AddCosmosDbDataProvider(
-                    RetrieveSecret("reporting-web-api-cosmosdb-connection-string"),
-                    "ProjectsTasks"
-                );
-            }
-            else
-            {
-                Log.Logger.Error("Unknown STORAGE_TYPE configuration");
-                throw new Exception("Please, define STORAGE_TYPE by environment variables or Asp Net Core Configuration. Application supports AzureSQL and CosmosDB storage types.");
-            }
+            services.AddSingleton<SecretsProvider>();
+            services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
+            services.AddSingleton(Configuration);
+            services.AddDataProvider(Configuration["STORAGE_TYPE"], Log.Logger);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -78,14 +52,6 @@ namespace ProjectTasks.WebApi
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
-        }
-
-        private string RetrieveSecret(string secretKey)
-        {
-            var keyVaultUrl = Configuration["AppKeyVault:Endpoint"];
-            var keyVaultClient = new SecretClient(new Uri(keyVaultUrl), _azureCredentials, _secretClientOptions);
-            KeyVaultSecret secret = keyVaultClient.GetSecret(secretKey);
-            return secret.Value;
         }
     }
 }
