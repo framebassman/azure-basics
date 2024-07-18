@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProjectTasks.DataAccess.Common\ProjectTasks.DataAccess.Common.csproj" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.3" />
+    </ItemGroup>
+
+</Project>
