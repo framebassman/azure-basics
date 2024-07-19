@@ -32,3 +32,8 @@ update-azure-sql:
 	STORAGE_TYPE=AzureSQL dotnet ef \
 		database update \
 		--project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
+
+sync:
+	rm -rf ProjectTasks.SyncFunction/bin
+	rm -rf ProjectTasks.SyncFunction/obj
+	cd ProjectTasks.SyncFunction && func start

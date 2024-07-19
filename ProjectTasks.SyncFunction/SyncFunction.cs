@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.CosmosDb;
 
@@ -30,11 +31,19 @@ namespace ProjectTasks.SyncFunction
         }
 
         [Function("SyncFunction")]
-        public async Task<IActionResult> Run([TimerTrigger("0 */30 * * * *")] TimerInfo timerInfo)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
-            _logger.LogInformation("Start sync");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            // SetupEnvironment();
             return await SyncProjects();
         }
+
+        // [Function("SyncFunction")]
+        // public async Task<IActionResult> Run([TimerTrigger("0 */30 * * * *")] TimerInfo timerInfo)
+        // {
+        //     _logger.LogInformation("Start sync");
+        //     return await SyncProjects();
+        // }
 
         public async Task<IActionResult> SyncProjects()
         {
