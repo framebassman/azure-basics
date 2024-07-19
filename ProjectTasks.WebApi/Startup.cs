@@ -1,9 +1,6 @@
 using Azure.Core;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.EntityFrameworkCore;
-using ProjectTasks.DataAccess.AzureSQL;
-using ProjectTasks.DataAccess.CosmosDb;
+using ProjectTasks.DataAccess.Common;
 using Serilog;
 
 namespace ProjectTasks.WebApi

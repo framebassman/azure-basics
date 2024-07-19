@@ -1,7 +1,7 @@
 using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.Common;
 using ProjectTasks.DataAccess.CosmosDb;
 using Serilog;
-using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace ProjectTasks.WebApi;
 
@@ -34,7 +34,7 @@ public static class DbContextCollectionExtensions
         else
         {
             Log.Logger.Error($"Unknown {STORAGE_TYPE} configuration");
-            throw new ArgumentOutOfRangeException
+            throw new System.ArgumentOutOfRangeException
             (
                 STORAGE_TYPE,
                 $"Please, define {STORAGE_TYPE} by environment variables or Asp Net Core Configuration. Application supports {AzureSQL} and {CosmosDb} storage types."

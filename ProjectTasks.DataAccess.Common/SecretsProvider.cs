@@ -1,7 +1,10 @@
+using System;
 using Azure.Core;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace ProjectTasks.WebApi;
+namespace ProjectTasks.DataAccess.Common;
 
 public class SecretsProvider
 {
