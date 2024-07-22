@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +10,18 @@ namespace ProjectTasks.SyncFunction
 {
     public class SyncFunction
     {
-        private readonly ILogger<SyncFunction> _logger;
+        private ILogger<SyncFunction> _logger;
         private IMapper _mapper;
         private AzureSqlDbContext _sql;
         private CosmosDbContext _cosmos;
 
         public SyncFunction(
             ILogger<SyncFunction> logger,
-            IMapper mapper,
-            AzureSqlDbContext sql,
-            CosmosDbContext cosmos
+            IMapper mapper
         )
         {
             _logger = logger;
             _mapper = mapper;
-            _sql = sql;
-            _cosmos = cosmos;
         }
 
         [Function("SyncFunction")]
@@ -35,7 +29,7 @@ namespace ProjectTasks.SyncFunction
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             // SetupEnvironment();
-            return await SyncProjects();
+            return new OkObjectResult("ok");
         }
 
         // [Function("SyncFunction")]

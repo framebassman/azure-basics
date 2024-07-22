@@ -2,7 +2,7 @@
   "profiles": {
     "ProjectTasks.SyncFunction": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7124",
+      "commandLineArgs": "--port localhost:7071",
       "launchBrowser": false
     }
   }
