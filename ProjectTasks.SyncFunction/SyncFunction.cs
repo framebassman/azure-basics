@@ -50,7 +50,7 @@ namespace ProjectTasks.SyncFunction
             // {
             //     return new OkObjectResult("There is no projects to sync");
             // }
-            //
+
             // List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
             // using (var sqlTransaction = _sql.Database.BeginTransaction())
             // {
@@ -59,7 +59,7 @@ namespace ProjectTasks.SyncFunction
             //     var sqlUnsyncProjects = await _sql.UnsyncronizedProjects
             //         .Include(p => p.Tasks)
             //         .ToListAsync();
-            //
+
             //     var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
             //     foreach (var project in cosmosProjects)
             //     {
@@ -76,11 +76,11 @@ namespace ProjectTasks.SyncFunction
             //     await _cosmos.Projects.AddRangeAsync(cosmosProjects);
             //     await _cosmos.Tasks.AddRangeAsync(cosmosTasks);
             //     saveChangesResults.Add(_cosmos.SaveChangesAsync());
-            //
+
             //     _logger.LogInformation("");
             //     _logger.LogInformation("Remove projects from unsyncronized table");
             //     _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
-            //
+
             //     saveChangesResults.Add(_sql.SaveChangesAsync());
             //     await System.Threading.Tasks.Task.WhenAll(saveChangesResults);
             //     sqlTransaction.Commit();
