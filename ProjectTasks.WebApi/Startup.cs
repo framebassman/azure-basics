@@ -27,6 +27,7 @@ namespace ProjectTasks.WebApi
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen();
             services.AddSerilog();
+            services.AddHttpLogging(o => { });
             services.AddSingleton<SecretsProvider>();
             services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
             services.AddSingleton(Configuration);
@@ -52,6 +53,7 @@ namespace ProjectTasks.WebApi
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = string.Empty;
             });
+            app.UseHttpLogging();
         }
     }
 }
