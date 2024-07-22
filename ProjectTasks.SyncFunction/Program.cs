@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.Azure.Functions.Worker;
@@ -40,32 +38,19 @@ namespace ProjectTasks.SyncFunction
 
         public void Run(string[] args)
         {
-            // var tempBuilder = new HostBuilder()
-            //     .ConfigureServices(services =>
-            //     {
-            //         services.AddSerilog();
-            //         services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
-            //         services.AddSingleton<IConfiguration>(BuildConfiguration());
-            //         services.AddSingleton<SecretsProvider>();
-            //     }).Build();
-            // var secretsProvider = tempBuilder.Services.GetService<SecretsProvider>();
+            var tempBuilder = new HostBuilder()
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.AddSerilog(_logger, true);
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
+                    services.AddSingleton<IConfiguration>(BuildConfiguration());
+                    services.AddSingleton<SecretsProvider>();
+                }).Build();
+            var secretsProvider = tempBuilder.Services.GetService<SecretsProvider>();
             var host = new HostBuilder()
-                //     .ConfigureFunctionsWebApplication()
-                //     .ConfigureServices(services => {
-                //         services.AddAutoMapper(typeof(Program));
-                //         services.AddApplicationInsightsTelemetryWorkerService();
-                //         services.ConfigureFunctionsApplicationInsights();
-                //         services.AddAzureSqlDataProvider(
-                //             secretsProvider.Retrieve("reporting-web-api-connection-string")
-                //         );
-                //         services.AddCosmosDbDataProvider(
-                //             secretsProvider.Retrieve(
-                //                 "reporting-web-api-cosmosdb-connection-string"),
-                //                 "ProjectsTasks"
-                //         );
-                //         services.AddSerilog();
-                //     })
-                //     .Build();
                 .ConfigureFunctionsWebApplication()
                 .ConfigureLogging((hostingContext, logging) =>
                 {
@@ -76,6 +61,14 @@ namespace ProjectTasks.SyncFunction
                     services.AddApplicationInsightsTelemetryWorkerService();
                     services.ConfigureFunctionsApplicationInsights();
                     services.AddAutoMapper(typeof(Program));
+                    services.AddAzureSqlDataProvider(
+                        secretsProvider.Retrieve("reporting-web-api-connection-string")
+                    );
+                    services.AddCosmosDbDataProvider(
+                        secretsProvider.Retrieve(
+                            "reporting-web-api-cosmosdb-connection-string"),
+                            "ProjectsTasks"
+                    );
                 })
                 .Build();
 

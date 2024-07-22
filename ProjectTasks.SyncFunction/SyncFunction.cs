@@ -17,11 +17,15 @@ namespace ProjectTasks.SyncFunction
 
         public SyncFunction(
             ILogger<SyncFunction> logger,
-            IMapper mapper
+            IMapper mapper,
+            AzureSqlDbContext sql,
+            CosmosDbContext cosmos
         )
         {
             _logger = logger;
             _mapper = mapper;
+            _sql = sql;
+            _cosmos = cosmos;
         }
 
         [Function("SyncFunction")]

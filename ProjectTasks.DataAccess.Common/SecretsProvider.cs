@@ -34,7 +34,9 @@ public class SecretsProvider
 
     public string Retrieve(string secretKey)
     {
+        _log.LogInformation("Secret from keyvault is going to be retrieved");
         KeyVaultSecret secret = _keyVaultClient.GetSecret(secretKey);
+        _log.LogInformation("Secret was retrieved");
         return secret.Value;
     }
 }
