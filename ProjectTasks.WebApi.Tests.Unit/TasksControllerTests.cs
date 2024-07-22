@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,5 +70,11 @@ public class TasksControllerTests : TestBed<Fixture>
         Assert.Equal(taskResponses.First().Name, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().Name);
         Assert.Equal(taskResponses.First().Description, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().Description);
         Assert.Equal(taskResponses.First().ProjectReferenceId, ((IEnumerable<TicketResponse>) ((OkObjectResult) tasks).Value).First().ProjectReferenceId);
+    }
+
+    [Fact]
+    public void ItWorks()
+    {
+        DateTime dateTime = DateTime.MinValue;
     }
 }

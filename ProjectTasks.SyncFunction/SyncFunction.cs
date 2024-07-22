@@ -1,11 +1,15 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.CosmosDb;
+using System.Linq;
 
 namespace ProjectTasks.SyncFunction
 {
@@ -33,8 +37,7 @@ namespace ProjectTasks.SyncFunction
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            // SetupEnvironment();
-            return new OkObjectResult("ok");
+            return await SyncProjects();
         }
 
         // [Function("SyncFunction")]
@@ -46,47 +49,52 @@ namespace ProjectTasks.SyncFunction
 
         public async Task<IActionResult> SyncProjects()
         {
-            // if (!_sql.UnsyncronizedProjects.Any())
-            // {
-            //     return new OkObjectResult("There is no projects to sync");
-            // }
+            var defaultDateTime = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Unspecified);
+            var syncronizedDateTime = DateTime.UtcNow;
 
-            // List<System.Threading.Tasks.Task> saveChangesResults = new List<System.Threading.Tasks.Task>();
-            // using (var sqlTransaction = _sql.Database.BeginTransaction())
-            // {
-            //     _logger.LogInformation("");
-            //     _logger.LogInformation("Get All unsync projects from SQL");
-            //     var sqlUnsyncProjects = await _sql.UnsyncronizedProjects
-            //         .Include(p => p.Tasks)
-            //         .ToListAsync();
+            var candidate = _sql.Projects.ToList()[0];
 
-            //     var cosmosProjects = _mapper.Map<List<Model.CosmosDb.Project>>(sqlUnsyncProjects);
-            //     foreach (var project in cosmosProjects)
-            //     {
-            //         project.PartitionKey = "Test";
-            //         foreach (var task in project.Tasks)
-            //         {
-            //             task.PartitionKey = "Test";
-            //         }
-            //     }
-            //     var cosmosTasks = cosmosProjects
-            //         .SelectMany(p => p.Tasks);
-            //     _logger.LogInformation("");
-            //     _logger.LogInformation("Add Projects to CosmosDb");
-            //     await _cosmos.Projects.AddRangeAsync(cosmosProjects);
-            //     await _cosmos.Tasks.AddRangeAsync(cosmosTasks);
-            //     saveChangesResults.Add(_cosmos.SaveChangesAsync());
+            if (await _sql.Projects.AllAsync(project => project.WasSynchronizedAt != defaultDateTime))
+            {
+                return new OkObjectResult("There is no data to sync");
+            }
 
-            //     _logger.LogInformation("");
-            //     _logger.LogInformation("Remove projects from unsyncronized table");
-            //     _sql.UnsyncronizedProjects.RemoveRange(sqlUnsyncProjects);
+            List<Task> saveChangesResults = new List<Task>();
+            using (var sqlTransaction = _sql.Database.BeginTransaction())
+            {
+                _logger.LogInformation("Get all unsync projects with tickets from SQL");
+                var sqlUnsyncProjects = await _sql.Projects
+                    .Where(project => project.WasSynchronizedAt != defaultDateTime)
+                    .Include(p => p.Tickets)
+                    .ToListAsync();
 
-            //     saveChangesResults.Add(_sql.SaveChangesAsync());
-            //     await System.Threading.Tasks.Task.WhenAll(saveChangesResults);
-            //     sqlTransaction.Commit();
-            //     return new OkObjectResult("Data was synced successfully");
-            // }
-            return new OkResult();
+                var cosmosProjects = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsyncProjects);
+                var cosmosTickets = new List<DataAccess.CosmosDb.Ticket>();
+                _logger.LogInformation("Combine project to inject into CosmosDb and put WasSynchronizedAt into AzureSQL data");
+                for (int i = 0; i < cosmosProjects.Count(); i++)
+                {
+                    cosmosProjects[i].PartitionKey = "Test";
+                    foreach (var ticket in cosmosProjects[i].Tickets)
+                    {
+                        ticket.PartitionKey = "Test";
+                        cosmosTickets.Add(ticket);
+                    }
+                    sqlUnsyncProjects[i].WasSynchronizedAt = syncronizedDateTime;
+                    foreach (var unsyncTicket in sqlUnsyncProjects[i].Tickets)
+                    {
+                        unsyncTicket.WasSynchronizedAt = syncronizedDateTime;
+                    }
+                }
+                saveChangesResults.Add(_sql.SaveChangesAsync());
+                _logger.LogInformation("Add projects to CosmosDb");
+                await _cosmos.Projects.AddRangeAsync(cosmosProjects);
+                await _cosmos.Tickets.AddRangeAsync(cosmosTickets);
+                saveChangesResults.Add(_cosmos.SaveChangesAsync());
+
+                await Task.WhenAll(saveChangesResults);
+                sqlTransaction.Commit();
+                return new OkObjectResult("Data was synced successfully");
+            }
         }
     }
 }
