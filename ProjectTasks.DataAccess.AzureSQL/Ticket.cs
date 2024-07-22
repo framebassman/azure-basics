@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -15,6 +16,7 @@ public class Ticket : ITicket
     public string Name { get; set; }
     public string Description { get; set; }
     public int ProjectReferenceId { get; set; }
+    public DateTime WasSynchronizedAt { get; set; }
     [JsonIgnore]
     public Project Project { get; set; }
 }
