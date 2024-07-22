@@ -28,14 +28,6 @@ migrations-azuresql-add-%:
 		--context AzureSqlDbContext \
 		--verbose
 
-undo-migration:
-	STORAGE_TYPE=AzureSQL dotnet ef \
-		migrations remove \
-		--project ProjectTasks.DataAccess.AzureSQL/ProjectTasks.DataAccess.AzureSQL.csproj \
-		--startup-project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj \
-		--context AzureSqlDbContext \
-		--verbose
-
 update-azure-sql:
 	STORAGE_TYPE=AzureSQL dotnet ef \
 		database update \
