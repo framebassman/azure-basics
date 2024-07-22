@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.Azure.Functions.Worker;
