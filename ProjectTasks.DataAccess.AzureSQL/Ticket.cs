@@ -16,7 +16,7 @@ public class Ticket : ITicket
     public string Name { get; set; }
     public string Description { get; set; }
     public int ProjectReferenceId { get; set; }
-    public DateTime WasSynchronizedAt { get; set; }
+    public bool WasSynchronized { get; set; }
     [JsonIgnore]
     public Project Project { get; set; }
 }

@@ -15,7 +15,7 @@ public class Project : IProject
     public int Id { get; set; }
     public string Name { get; set; }
     public string Code { get; set; }
-    public DateTime WasSynchronizedAt { get; set; }
+    public bool WasSynchronized { get; set; }
     [ForeignKey("ProjectReferenceId")]
     public ICollection<Ticket> Tickets { get; set; }
 }

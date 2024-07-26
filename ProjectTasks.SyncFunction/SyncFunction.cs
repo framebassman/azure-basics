@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -49,12 +48,7 @@ namespace ProjectTasks.SyncFunction
 
         public async Task<IActionResult> SyncProjects()
         {
-            var defaultDateTime = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Unspecified);
-            var syncronizedDateTime = DateTime.UtcNow;
-
-            var candidate = _sql.Projects.ToList()[0];
-
-            if (await _sql.Projects.AllAsync(project => project.WasSynchronizedAt != defaultDateTime))
+            if (await _sql.Projects.Where(project => !project.WasSynchronized).CountAsync() == 0)
             {
                 return new OkObjectResult("There is no data to sync");
             }
@@ -64,14 +58,14 @@ namespace ProjectTasks.SyncFunction
             {
                 _logger.LogInformation("Get all unsync projects with tickets from SQL");
                 var sqlUnsyncProjects = await _sql.Projects
-                    .Where(project => project.WasSynchronizedAt != defaultDateTime)
+                    .Where(project => !project.WasSynchronized)
                     .Include(p => p.Tickets)
                     .ToListAsync();
 
                 var cosmosProjects = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsyncProjects);
                 var cosmosTickets = new List<DataAccess.CosmosDb.Ticket>();
                 _logger.LogInformation("Combine project to inject into CosmosDb and put WasSynchronizedAt into AzureSQL data");
-                for (int i = 0; i < cosmosProjects.Count(); i++)
+                for (int i = 0; i < cosmosProjects.Count; i++)
                 {
                     cosmosProjects[i].PartitionKey = "Test";
                     foreach (var ticket in cosmosProjects[i].Tickets)
@@ -79,10 +73,10 @@ namespace ProjectTasks.SyncFunction
                         ticket.PartitionKey = "Test";
                         cosmosTickets.Add(ticket);
                     }
-                    sqlUnsyncProjects[i].WasSynchronizedAt = syncronizedDateTime;
+                    sqlUnsyncProjects[i].WasSynchronized = true;
                     foreach (var unsyncTicket in sqlUnsyncProjects[i].Tickets)
                     {
-                        unsyncTicket.WasSynchronizedAt = syncronizedDateTime;
+                        unsyncTicket.WasSynchronized = true;
                     }
                 }
                 saveChangesResults.Add(_sql.SaveChangesAsync());
@@ -92,7 +86,7 @@ namespace ProjectTasks.SyncFunction
                 saveChangesResults.Add(_cosmos.SaveChangesAsync());
 
                 await Task.WhenAll(saveChangesResults);
-                sqlTransaction.Commit();
+                await sqlTransaction.CommitAsync();
                 return new OkObjectResult("Data was synced successfully");
             }
         }
