@@ -64,13 +64,18 @@ namespace ProjectTasks.SyncFunction
                     services.ConfigureFunctionsApplicationInsights();
                     services.AddAutoMapper(typeof(Program));
                     services.AddAzureSqlDataProvider(
-                        secretsProvider.Retrieve("reporting-web-api-connection-string")
+                        secretsProvider.Retrieve("reporting-web-api-connection-string"),
+                        ServiceLifetime.Transient
                     );
                     services.AddCosmosDbDataProvider(
                         secretsProvider.Retrieve(
-                            "reporting-web-api-cosmosdb-connection-string"),
-                            "ProjectsTasks"
+                            "reporting-web-api-cosmosdb-connection-string"
+                        ),
+                        "ProjectsTasks",
+                        ServiceLifetime.Transient
                     );
+                    services.AddTransient<ProjectsSynchronizer>();
+                    services.AddTransient<TicketsSynchronizer>();
                 })
                 .Build();
 

@@ -21,7 +21,8 @@ public static class DbContextCollectionExtensions
         {
             services.AddAzureSqlDataProvider
             (
-                secrets.Retrieve("reporting-web-api-connection-string")
+                secrets.Retrieve("reporting-web-api-connection-string"),
+                ServiceLifetime.Scoped
             );
         }
         else if (storageType == CosmosDb)
@@ -29,7 +30,8 @@ public static class DbContextCollectionExtensions
             services.AddCosmosDbDataProvider
             (
                 secrets.Retrieve("reporting-web-api-cosmosdb-connection-string"),
-                "ProjectsTasks"
+                "ProjectsTasks",
+                ServiceLifetime.Scoped
             );
         }
         else

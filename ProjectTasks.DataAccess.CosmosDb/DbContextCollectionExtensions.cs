@@ -6,12 +6,13 @@ namespace ProjectTasks.DataAccess.CosmosDb;
 
 public static class DbContextCollectionExtensions
 {
-    public static void AddCosmosDbDataProvider(this IServiceCollection services, string connectionString, string databaseName)
+    public static void AddCosmosDbDataProvider(this IServiceCollection services, string connectionString, string databaseName, ServiceLifetime lifetime)
     {
         services.AddTransient<IProjectDataProvider, CosmosDbDataProvider>();
         services.AddTransient<ITicketDataProvider, CosmosDbDataProvider>();
         services.AddDbContext<CosmosDbContext>(
-            options => options.UseCosmos(connectionString, databaseName)
+            options => options.UseCosmos(connectionString, databaseName),
+            lifetime
         );
     }
 }
