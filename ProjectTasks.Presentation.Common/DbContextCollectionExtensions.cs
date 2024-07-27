@@ -4,7 +4,7 @@ using ProjectTasks.DataAccess.Common;
 using ProjectTasks.DataAccess.CosmosDb;
 using Serilog;
 
-namespace ProjectTasks.WebApi;
+namespace ProjectTasks.Presentation.Common;
 
 public static class DbContextCollectionExtensions
 {
@@ -12,7 +12,7 @@ public static class DbContextCollectionExtensions
     private static string AzureSQL = "AzureSQL";
     private static string CosmosDb = "CosmosDb";
 
-    public static void AddDataProvider(this IServiceCollection services, string storageType, Serilog.ILogger log)
+    public static void AddDataProvider(this IServiceCollection services, string storageType, ILogger log, ServiceLifetime lifetime)
     {
         var serviceProvider = services.BuildServiceProvider();
         var secrets = serviceProvider.GetService<SecretsProvider>();
@@ -22,7 +22,7 @@ public static class DbContextCollectionExtensions
             services.AddAzureSqlDataProvider
             (
                 secrets.Retrieve("reporting-web-api-connection-string"),
-                ServiceLifetime.Scoped
+                lifetime
             );
         }
         else if (storageType == CosmosDb)
@@ -31,7 +31,7 @@ public static class DbContextCollectionExtensions
             (
                 secrets.Retrieve("reporting-web-api-cosmosdb-connection-string"),
                 "ProjectsTasks",
-                ServiceLifetime.Scoped
+                lifetime
             );
         }
         else

@@ -9,21 +9,18 @@
       "enableLiveMetricsFilters": true
     }
   },
-  "AppKeyVault": {
-    "Endpoint": "https://reporting13bjqz1801fzkoi.vault.azure.net/"
-  },
   "Serilog": {
     "LevelSwitches": { "controlSwitch": "Verbose" },
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
         "Microsoft": "Information",
-        "ProjectTasks.WebApi": "Verbose"
+        "ProjectTasks.SyncFunction": "Verbose"
       }
     },
     "Enrich": ["WithThreadId", "FromLogContext", "WithMachineName", "WithEnvironmentName"],
     "Properties": {
-      "Application": "ProjectTasks.WebApi"
+      "Application": "ProjectTasks.SyncFunction"
     },
     "WriteTo": [
       {

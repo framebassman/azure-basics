@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectTasks.DataAccess.Common;
+using ProjectTasks.Presentation.Common;
 using Serilog;
 
 namespace ProjectTasks.WebApi
@@ -32,7 +33,7 @@ namespace ProjectTasks.WebApi
             services.AddSingleton<SecretsProvider>();
             services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
             services.AddSingleton(Configuration);
-            services.AddDataProvider(Configuration["STORAGE_TYPE"], Log.Logger);
+            services.AddDataProvider(Configuration["STORAGE_TYPE"], Log.Logger, ServiceLifetime.Scoped);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

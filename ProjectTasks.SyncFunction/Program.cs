@@ -6,101 +6,56 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectTasks.DataAccess.AzureSQL;
-using ProjectTasks.DataAccess.Common;
-using ProjectTasks.DataAccess.CosmosDb;
+using ProjectTasks.SyncFunction;
+using ProjectTasks.Presentation.Common;
 using Serilog;
+using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.SyncFunction
-{
-    public class Program
+var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("host.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("local.settings.json", optional: true)
+    .AddJsonFile($"{currentEnv}.settings.json", optional: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+
+Serilog.Core.Logger logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
+
+var host = new HostBuilder()
+    .ConfigureLogging((hostingContext, logging) =>
     {
-        private Serilog.Core.Logger _logger;
+        logging.AddSerilog(logger, true);
+    })
+    .ConfigureFunctionsWebApplication()
+    .ConfigureServices(services => {
+        services.AddApplicationInsightsTelemetryWorkerService();
+        services.ConfigureFunctionsApplicationInsights();
+        services.AddAutoMapper(typeof(Program));
+        services.AddTransient<SecretsProvider>();
+        services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
+        services.AddSingleton(configuration);
+        // services.AddDataProvider("AzureSQL", Log.Logger, ServiceLifetime.Transient);
+        // services.AddDataProvider("CosmosDb", Log.Logger, ServiceLifetime.Transient);
+        // services.AddTransient<ProjectsSynchronizer>();
+        // services.AddTransient<TicketsSynchronizer>();
+    })
+    .Build();
 
-        public Program(Serilog.Core.Logger logger)
-        {
-            _logger = logger;
-        }
-
-        public static void Main(string[] args)
-        {
-            Serilog.Core.Logger staticLogger = new LoggerConfiguration()
-                .ReadFrom.Configuration(BuildConfiguration())
-                .CreateLogger();
-            try
-            {
-                staticLogger.Information("Getting started...");
-                var program = new Program(staticLogger);
-                program.Run(args);
-            }
-            catch (Exception ex)
-            {
-                staticLogger.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
-
-        public void Run(string[] args)
-        {
-            var tempBuilder = new HostBuilder()
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddSerilog(_logger, true);
-                })
-                .ConfigureServices(services =>
-                {
-                    services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
-                    services.AddSingleton<IConfiguration>(BuildConfiguration());
-                    services.AddSingleton<SecretsProvider>();
-                }).Build();
-            var secretsProvider = tempBuilder.Services.GetService<SecretsProvider>();
-            var host = new HostBuilder()
-                .ConfigureFunctionsWebApplication()
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddSerilog(_logger, true);
-                })
-                .ConfigureServices(services =>
-                {
-                    services.AddApplicationInsightsTelemetryWorkerService();
-                    services.ConfigureFunctionsApplicationInsights();
-                    services.AddAutoMapper(typeof(Program));
-                    services.AddAzureSqlDataProvider(
-                        secretsProvider.Retrieve("reporting-web-api-connection-string"),
-                        ServiceLifetime.Transient
-                    );
-                    services.AddCosmosDbDataProvider(
-                        secretsProvider.Retrieve(
-                            "reporting-web-api-cosmosdb-connection-string"
-                        ),
-                        "ProjectsTasks",
-                        ServiceLifetime.Transient
-                    );
-                    services.AddTransient<ProjectsSynchronizer>();
-                    services.AddTransient<TicketsSynchronizer>();
-                })
-                .Build();
-
-            host.Run();
-        }
-
-        private static IConfiguration BuildConfiguration()
-        {
-            return new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("host.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("local.settings.json", optional: true)
-                .AddJsonFile($"{CurrentEnv()}.settings.json", optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-        }
-
-        private static string CurrentEnv()
-        {
-            return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
-        }
-    }
+try
+{
+    logger.Information("Getting started...");
+    host.Run();
+}
+catch (Exception ex)
+{
+    logger.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
 }
