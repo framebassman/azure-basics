@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +6,7 @@ using ProjectTasks.DataAccess.Common;
 namespace ProjectTasks.DataAccess.AzureSQL;
 
 [Table("projects")]
-public class Project : IProject
+public class Project : IProject, ISynchronizable
 {
     [Column("id")]
     [Key]

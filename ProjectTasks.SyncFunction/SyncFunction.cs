@@ -33,7 +33,7 @@ namespace ProjectTasks.SyncFunction
 
         public async Task<IActionResult> SyncProjects()
         {
-            await Task.WhenAll(_projectsSynchronizer.Synchronize(), _ticketsSynchronizer.Synchronize());
+            await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
             return new OkObjectResult("Data were synchronized");
         }
     }

@@ -7,7 +7,7 @@ using ProjectTasks.DataAccess.Common;
 namespace ProjectTasks.DataAccess.AzureSQL;
 
 [Table("tasks")]
-public class Ticket : ITicket
+public class Ticket : ITicket, ISynchronizable
 {
     [Column("id")]
     [Key]

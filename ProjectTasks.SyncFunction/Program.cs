@@ -15,26 +15,31 @@ namespace ProjectTasks.SyncFunction
 {
     public class Program
     {
-        private static Serilog.Core.Logger _logger;
+        private Serilog.Core.Logger _logger;
+
+        public Program(Serilog.Core.Logger logger)
+        {
+            _logger = logger;
+        }
 
         public static void Main(string[] args)
         {
-            _logger = new LoggerConfiguration()
+            Serilog.Core.Logger staticLogger = new LoggerConfiguration()
                 .ReadFrom.Configuration(BuildConfiguration())
                 .CreateLogger();
             try
             {
-                _logger.Information("Getting started...");
-                var program = new Program();
+                staticLogger.Information("Getting started...");
+                var program = new Program(staticLogger);
                 program.Run(args);
             }
             catch (Exception ex)
             {
-                _logger.Fatal(ex, "Host terminated unexpectedly");
+                staticLogger.Fatal(ex, "Host terminated unexpectedly");
             }
             finally
             {
-                Serilog.Log.CloseAndFlush();
+                Log.CloseAndFlush();
             }
         }
 
