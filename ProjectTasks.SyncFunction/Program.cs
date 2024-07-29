@@ -39,10 +39,10 @@ var host = new HostBuilder()
         services.AddTransient<SecretsProvider>();
         services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
         services.AddSingleton(configuration);
-        // services.AddDataProvider("AzureSQL", Log.Logger, ServiceLifetime.Transient);
-        // services.AddDataProvider("CosmosDb", Log.Logger, ServiceLifetime.Transient);
-        // services.AddTransient<ProjectsSynchronizer>();
-        // services.AddTransient<TicketsSynchronizer>();
+        services.AddDataProvider("AzureSQL", Log.Logger, ServiceLifetime.Transient);
+        services.AddDataProvider("CosmosDb", Log.Logger, ServiceLifetime.Transient);
+        services.AddTransient<ProjectsSynchronizer>();
+        services.AddTransient<TicketsSynchronizer>();
     })
     .Build();
 

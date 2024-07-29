@@ -13,18 +13,18 @@ namespace ProjectTasks.SyncFunction
         private TicketsSynchronizer _ticketsSynchronizer;
 
         public SyncFunction(
-            ILogger<SyncFunction> logger
-            // ProjectsSynchronizer projectsSynchronizer,
-            // TicketsSynchronizer ticketsSynchronizer
+            ILogger<SyncFunction> logger,
+            ProjectsSynchronizer projectsSynchronizer,
+            TicketsSynchronizer ticketsSynchronizer
         )
         {
             _logger = logger;
-            // _projectsSynchronizer = projectsSynchronizer;
-            // _ticketsSynchronizer = ticketsSynchronizer;
+            _projectsSynchronizer = projectsSynchronizer;
+            _ticketsSynchronizer = ticketsSynchronizer;
         }
 
         // [Function("SyncFunction")]
-        // public async Task<IActionResult> Run([TimerTrigger("0 */2 * * * *")] TimerInfo timerInfo)
+        // public async Task<IActionResult> Run([TimerTrigger("*/30 * * * *")] TimerInfo timerInfo)
         [Function("SyncFunction")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
