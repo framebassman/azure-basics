@@ -23,13 +23,11 @@ namespace ProjectTasks.SyncFunction
             _ticketsSynchronizer = ticketsSynchronizer;
         }
 
-        // [Function("SyncFunction")]
-        // public async Task<IActionResult> Run([TimerTrigger("*/30 * * * *")] TimerInfo timerInfo)
         [Function("SyncFunction")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> Run([TimerTrigger("*/30 * * * *")] TimerInfo timerInfo)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            // await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
+            await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
             return new OkObjectResult("Data were synchronized");
         }
     }
