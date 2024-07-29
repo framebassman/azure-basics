@@ -26,14 +26,12 @@ namespace ProjectTasks.SyncFunction
         // [Function("SyncFunction")]
         // public async Task<IActionResult> Run([TimerTrigger("0 */2 * * * *")] TimerInfo timerInfo)
         [Function("SyncFunction")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
-            // _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
             // _projectsSynchronizer.SynchronizeAsync();
             // _ticketsSynchronizer.SynchronizeAsync();
-            // return new OkObjectResult("Data were synchronized");
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions!");
+            return new OkObjectResult("Data were synchronized");
         }
 
         public async Task<IActionResult> SyncProjects()
