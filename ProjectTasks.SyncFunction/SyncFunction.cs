@@ -29,14 +29,7 @@ namespace ProjectTasks.SyncFunction
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            // _projectsSynchronizer.SynchronizeAsync();
-            // _ticketsSynchronizer.SynchronizeAsync();
-            return new OkObjectResult("Data were synchronized");
-        }
-
-        public async Task<IActionResult> SyncProjects()
-        {
-            await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
+            // await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
             return new OkObjectResult("Data were synchronized");
         }
     }
