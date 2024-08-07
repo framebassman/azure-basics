@@ -49,7 +49,7 @@ namespace ProjectTasks.SyncFunction
                     .Where(e => !e.WasSynchronized)
                     .ToListAsync();
 
-                var count = sqlUnsync.Count();
+                var count = sqlUnsync.Count;
                 var cosmosSync = _mapper.Map<List<T>>(sqlUnsync);
                 cosmosSync.ForEach(e => e.PartitionKey = "Test");
                 await cosmosEntities.AddRangeAsync(cosmosSync);

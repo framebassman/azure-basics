@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.CosmosDb; 
+namespace ProjectTasks.DataAccess.CosmosDb;
 
 public class CosmosDbDataProvider :
     IProjectDataProvider,
@@ -45,6 +45,16 @@ public class CosmosDbDataProvider :
         return entity.Entity;
     }
 
+    public Task<List<IProject>> GetProjectsToSync(Expression<Func<IProject, bool>> predicate, CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> GetLastSynchronizedProjectId(CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token)
     {
         return await _db.Tickets.ToListAsync(token);
@@ -69,5 +79,23 @@ public class CosmosDbDataProvider :
         var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
         return entry.Entity;
+    }
+
+    public Task<List<ITicket>> GetTicketsWhereAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> GetLastSynchronizedTicketId(CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> AddProjectsBulk(List<Project> projects, CancellationToken token)
+    {
+        projects.ForEach(e => e.PartitionKey = "Test");
+        await _db.Projects.AddRangeAsync(projects, token);
+        await _db.SaveChangesAsync(token);
+        return true;
     }
 }

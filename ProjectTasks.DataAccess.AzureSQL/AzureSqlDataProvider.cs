@@ -65,9 +65,35 @@ public class AzureSqlDataProvider :
         return entry.Entity;
     }
 
-    private async Task<string> GetSetting(string key)
+    public async Task<List<IProject>> GetProjectsToSync(Expression<Func<IProject, bool>> predicate, CancellationToken token)
     {
-        var candidate = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key);
+        return await _db.Projects
+            .Where(predicate)
+            .ToListAsync(token);
+    }
+
+    public async Task<List<ITicket>> GetTicketsWhereAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
+    {
+        return await _db.Tickets
+            .Where(predicate)
+            .ToListAsync(token);
+    }
+
+    public async Task<int> GetLastSynchronizedProjectId(CancellationToken token)
+    {
+        int.TryParse(await GetSetting(Settings.LastSynchronizedProjectId, token), out var candidate);
+        return candidate;
+    }
+
+    public async Task<int> GetLastSynchronizedTicketId(CancellationToken token)
+    {
+        int.TryParse(await GetSetting(Settings.LastSynchronizedTicketId, token), out var candidate);
+        return candidate;
+    }
+
+    private async Task<string> GetSetting(string key, CancellationToken token)
+    {
+        var candidate = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
         return candidate == null ? "" : candidate.Value;
     }
 
@@ -86,14 +112,9 @@ public class AzureSqlDataProvider :
         return true;
     }
 
-    // public async Task<IProject> GetUnsynchronizedProjects()
-    // {
-    //     var fromConfig = await GetSetting(Settings.LastSynchronizedProjectId);
-    //     bool success = int.TryParse(fromConfig, out var candidate);
-    //     var lastSyncId = success ? candidate : 0;
-    //     List<Project> unsyncedProjects = await _db.Projects
-    //                                 .Where(project => project.Id > lastSyncId)
-    //                                 .ToListAsync();
-    //     return unsyncedProjects;
-    // }
+    public async Task<bool> UpdateLastSynchronizedProjectId(int id, CancellationToken token)
+    {
+        await SetSetting(Settings.LastSynchronizedProjectId, id.ToString(), token);
+        return true;
+    }
 }
