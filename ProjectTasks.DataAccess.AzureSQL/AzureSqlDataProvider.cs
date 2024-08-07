@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,4 +64,36 @@ public class AzureSqlDataProvider :
         await _db.SaveChangesAsync(token);
         return entry.Entity;
     }
+
+    private async Task<string> GetSetting(string key)
+    {
+        var candidate = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key);
+        return candidate == null ? "" : candidate.Value;
+    }
+
+    private async Task<bool> SetSetting(string key, string value, CancellationToken token)
+    {
+        var current = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
+        if (current == null)
+        {
+            await _db.Settings.AddAsync(new Settings{ Key = key, Value = value }, token);
+            await _db.SaveChangesAsync(token);
+            return true;
+        }
+
+        current.Value = value;
+        await _db.SaveChangesAsync(token);
+        return true;
+    }
+
+    // public async Task<IProject> GetUnsynchronizedProjects()
+    // {
+    //     var fromConfig = await GetSetting(Settings.LastSynchronizedProjectId);
+    //     bool success = int.TryParse(fromConfig, out var candidate);
+    //     var lastSyncId = success ? candidate : 0;
+    //     List<Project> unsyncedProjects = await _db.Projects
+    //                                 .Where(project => project.Id > lastSyncId)
+    //                                 .ToListAsync();
+    //     return unsyncedProjects;
+    // }
 }
