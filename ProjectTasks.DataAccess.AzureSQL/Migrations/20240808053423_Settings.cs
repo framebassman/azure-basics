@@ -5,13 +5,13 @@
 namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 {
     /// <inheritdoc />
-    public partial class settings : Migration
+    public partial class Settings : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Settings",
+                name: "settings",
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -19,7 +19,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Settings", x => x.Key);
+                    table.PrimaryKey("PK_settings", x => x.Key);
                 });
         }
 
@@ -27,7 +27,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Settings");
+                name: "settings");
         }
     }
 }

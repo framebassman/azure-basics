@@ -54,7 +54,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("Settings");
+                    b.ToTable("settings");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>

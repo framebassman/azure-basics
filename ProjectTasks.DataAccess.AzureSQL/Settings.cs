@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectTasks.DataAccess.AzureSQL;
 
+[Table("settings")]
 public class Settings
 {
     [Key]

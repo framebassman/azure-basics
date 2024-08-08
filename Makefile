@@ -20,7 +20,7 @@ run-cosmosdb:
 # Migrations not available for CosmosDb (https://learn.microsoft.com/en-us/ef/core/providers/cosmos/limitations)
 migrations-azuresql-add-%:
 	STORAGE_TYPE=AzureSQL dotnet ef \
-		migrations add $* \
+			migrations add $* \
 		--project ProjectTasks.DataAccess.AzureSQL/ProjectTasks.DataAccess.AzureSQL.csproj \
 		--startup-project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj \
 		--context AzureSqlDbContext \

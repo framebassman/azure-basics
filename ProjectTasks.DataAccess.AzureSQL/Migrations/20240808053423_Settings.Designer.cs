@@ -11,8 +11,8 @@ using ProjectTasks.DataAccess.AzureSQL;
 namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 {
     [DbContext(typeof(AzureSqlDbContext))]
-    [Migration("20240807093612_settings")]
-    partial class settings
+    [Migration("20240808053423_Settings")]
+    partial class Settings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("Settings");
+                    b.ToTable("settings");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
