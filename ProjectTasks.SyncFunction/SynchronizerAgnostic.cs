@@ -43,7 +43,8 @@ public class SynchronizerAgnostic
 
         var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
         await _cosmos.AddProjectsBulk(cosmosSync, token);
-        await _sql.UpdateLastSynchronizedProjectId(0, token);
+        var lastProjectToSync = sqlUnsync.TakeLast(1).First();
+        await _sql.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
         _logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
 
         return true;
