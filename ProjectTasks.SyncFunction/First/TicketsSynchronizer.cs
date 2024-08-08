@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.CosmosDb;
 
-namespace ProjectTasks.SyncFunction
+namespace ProjectTasks.SyncFunction.First
 {
     public class TicketsSynchronizer : Synchronizer<DataAccess.AzureSQL.Ticket, DataAccess.CosmosDb.Ticket>
     {

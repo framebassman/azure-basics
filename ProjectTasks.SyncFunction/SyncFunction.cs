@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using ProjectTasks.SyncFunction.First;
 
 namespace ProjectTasks.SyncFunction
 {
@@ -35,8 +36,9 @@ namespace ProjectTasks.SyncFunction
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             // await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
-            await _synchronizerAgnostic.SynchronizeProjects(new CancellationToken());
-            return new OkObjectResult("Data were synchronized");
+            var result = await _synchronizerAgnostic.SynchronizeProjects(new CancellationToken());
+            var message = result ? "Data were synchronized" : "There is no data to synchronize";
+            return new OkObjectResult(message);
         }
     }
 }

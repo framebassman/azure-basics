@@ -38,7 +38,7 @@ public class SynchronizerAgnostic
         if (sqlUnsync.Count == 0)
         {
             _logger.LogInformation($"There is no Projects to sync");
-            return true;
+            return false;
         }
 
         var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);

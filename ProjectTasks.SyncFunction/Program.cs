@@ -11,6 +11,7 @@ using ProjectTasks.SyncFunction;
 using ProjectTasks.Presentation.Common;
 using Serilog;
 using ProjectTasks.DataAccess.Common;
+using ProjectTasks.SyncFunction.First;
 
 var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.CosmosDb;
 
-namespace ProjectTasks.SyncFunction
+namespace ProjectTasks.SyncFunction.First
 {
     public abstract class Synchronizer<S, T>
         where S : class, ISynchronizable
