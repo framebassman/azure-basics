@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.AspNetCore.Mvc;
@@ -11,23 +12,30 @@ namespace ProjectTasks.SyncFunction
         private ILogger<SyncFunction> _logger;
         private ProjectsSynchronizer _projectsSynchronizer;
         private TicketsSynchronizer _ticketsSynchronizer;
+        private SynchronizerAgnostic _synchronizerAgnostic;
 
         public SyncFunction(
             ILogger<SyncFunction> logger,
             ProjectsSynchronizer projectsSynchronizer,
-            TicketsSynchronizer ticketsSynchronizer
+            TicketsSynchronizer ticketsSynchronizer,
+            SynchronizerAgnostic synchronizerAgnostic
         )
         {
             _logger = logger;
             _projectsSynchronizer = projectsSynchronizer;
             _ticketsSynchronizer = ticketsSynchronizer;
+            _synchronizerAgnostic = synchronizerAgnostic;
+
         }
 
+        // [Function("SyncFunction")]
+        // public async Task<IActionResult> Run([TimerTrigger("*/30 * * * *")] TimerInfo timerInfo)
         [Function("SyncFunction")]
-        public async Task<IActionResult> Run([TimerTrigger("*/30 * * * *")] TimerInfo timerInfo)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
+            // await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
+            await _synchronizerAgnostic.SynchronizeProjects(new CancellationToken());
             return new OkObjectResult("Data were synchronized");
         }
     }

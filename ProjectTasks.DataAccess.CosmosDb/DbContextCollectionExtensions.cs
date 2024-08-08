@@ -10,6 +10,7 @@ public static class DbContextCollectionExtensions
     {
         services.AddTransient<IProjectDataProvider, CosmosDbDataProvider>();
         services.AddTransient<ITicketDataProvider, CosmosDbDataProvider>();
+        services.AddTransient<CosmosDbDataProvider>();
         services.AddDbContext<CosmosDbContext>(
             options => options.UseCosmos(connectionString, databaseName),
             lifetime

@@ -10,6 +10,7 @@ public static class DbContextCollectionExtensions
     {
         services.AddTransient<IProjectDataProvider, AzureSqlDataProvider>();
         services.AddTransient<ITicketDataProvider, AzureSqlDataProvider>();
+        services.AddTransient<AzureSqlDataProvider>();
         services.AddDbContext<AzureSqlDbContext>(
             options => options.UseSqlServer(connectionString),
             lifetime

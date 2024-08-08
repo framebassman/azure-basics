@@ -30,7 +30,7 @@ public class SynchronizerAgnostic
         _cosmos = cosmos;
     }
 
-    protected async Task<bool> SynchronizeProjects(CancellationToken token)
+    public async Task<bool> SynchronizeProjects(CancellationToken token)
     {
         var lastSyncId = await _sql.GetLastSynchronizedProjectId(token);
         var sqlUnsync = await _sql.GetProjectsToSync(project => project.Id > lastSyncId, token);

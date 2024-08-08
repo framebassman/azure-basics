@@ -6,6 +6,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.SyncFunction;
 using ProjectTasks.Presentation.Common;
 using Serilog;
@@ -43,6 +44,7 @@ var host = new HostBuilder()
         services.AddDataProvider("CosmosDb", Log.Logger, ServiceLifetime.Transient);
         services.AddTransient<ProjectsSynchronizer>();
         services.AddTransient<TicketsSynchronizer>();
+        services.AddTransient<SynchronizerAgnostic>();
     })
     .Build();
 
