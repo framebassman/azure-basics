@@ -9,15 +9,15 @@ using ProjectTasks.DataAccess.CosmosDb;
 
 namespace ProjectTasks.SyncFunction;
 
-public class SynchronizerAgnostic
+public class TicketsSynchronizerAgnostic : ISynchronizer
 {
-    private ILogger<SynchronizerAgnostic> _logger;
+    private ILogger<TicketsSynchronizerAgnostic> _logger;
     private IMapper _mapper;
     protected AzureSqlDataProvider _sql;
     protected CosmosDbDataProvider _cosmos;
 
-    public SynchronizerAgnostic(
-        ILogger<SynchronizerAgnostic> logger,
+    public TicketsSynchronizerAgnostic(
+        ILogger<TicketsSynchronizerAgnostic> logger,
         IMapper mapper,
         AzureSqlDataProvider sql,
         CosmosDbDataProvider cosmos
@@ -29,27 +29,7 @@ public class SynchronizerAgnostic
         _cosmos = cosmos;
     }
 
-    public async Task<bool> SynchronizeProjects(CancellationToken token)
-    {
-        var lastSyncId = await _cosmos.GetLastSynchronizedProjectId(token);
-        var sqlUnsync = await _sql.GetProjectsToSync(project => project.Id > lastSyncId, token);
-
-        if (sqlUnsync.Count == 0)
-        {
-            _logger.LogInformation("There is no projects to sync");
-            return false;
-        }
-
-        var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
-        await _cosmos.AddProjectsBulk(cosmosSync, token);
-        var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-        await _cosmos.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
-        _logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
-
-        return true;
-    }
-
-    public async Task<bool> SynchronizeTickets(CancellationToken token)
+    public async Task<bool> SynchronizeAsync(CancellationToken token)
     {
         var lastSyncId = await _cosmos.GetLastSynchronizedTicketId(token);
         var sqlUnsync = await _sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
