@@ -45,11 +45,6 @@ public class CosmosDbDataProvider :
         return entity.Entity;
     }
 
-    public Task<List<IProject>> GetProjectsToSync(Expression<Func<IProject, bool>> predicate, CancellationToken token)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IEnumerable<ITicket>> GetAllTicketsAsync(CancellationToken token)
     {
         return await _db.Tickets.ToListAsync(token);
@@ -74,11 +69,6 @@ public class CosmosDbDataProvider :
         var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
         return entry.Entity;
-    }
-
-    public Task<List<ITicket>> GetTicketsWhereAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<bool> AddProjectsBulk(List<Project> projects, CancellationToken token)

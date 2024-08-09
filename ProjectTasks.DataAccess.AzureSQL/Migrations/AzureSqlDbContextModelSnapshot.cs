@@ -38,7 +38,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("projects", (string)null);
+                    b.ToTable("projects");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
@@ -63,7 +63,7 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
 
                     b.HasIndex("ProjectReferenceId");
 
-                    b.ToTable("tasks", (string)null);
+                    b.ToTable("tasks");
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
