@@ -10,13 +10,13 @@ namespace ProjectTasks.SyncFunction
     public class SyncFunction
     {
         private ILogger<SyncFunction> _logger;
-        private ProjectsSynchronizerAgnostic _projectsSynchronizer;
-        private TicketsSynchronizerAgnostic _ticketsSynchronizer;
+        private ProjectsSynchronizer _projectsSynchronizer;
+        private TicketsSynchronizer _ticketsSynchronizer;
 
         public SyncFunction(
             ILogger<SyncFunction> logger,
-            ProjectsSynchronizerAgnostic projectsSynchronizer,
-            TicketsSynchronizerAgnostic ticketsSynchronizer
+            ProjectsSynchronizer projectsSynchronizer,
+            TicketsSynchronizer ticketsSynchronizer
         )
         {
             _logger = logger;

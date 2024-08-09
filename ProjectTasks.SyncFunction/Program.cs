@@ -43,8 +43,8 @@ var host = new HostBuilder()
         services.AddSingleton(configuration);
         services.AddDataProvider("AzureSQL", Log.Logger, ServiceLifetime.Transient);
         services.AddDataProvider("CosmosDb", Log.Logger, ServiceLifetime.Transient);
-        services.AddTransient<ProjectsSynchronizerAgnostic>();
-        services.AddTransient<TicketsSynchronizerAgnostic>();
+        services.AddTransient<ProjectsSynchronizer>();
+        services.AddTransient<TicketsSynchronizer>();
     })
     .Build();
 

@@ -9,15 +9,15 @@ using ProjectTasks.DataAccess.CosmosDb;
 
 namespace ProjectTasks.SyncFunction;
 
-public class ProjectsSynchronizerAgnostic : ISynchronizer
+public class TicketsSynchronizer : ISynchronizer
 {
-    private ILogger<ProjectsSynchronizerAgnostic> _logger;
+    private ILogger<TicketsSynchronizer> _logger;
     private IMapper _mapper;
     protected AzureSqlDataProvider _sql;
     protected CosmosDbDataProvider _cosmos;
 
-    public ProjectsSynchronizerAgnostic(
-        ILogger<ProjectsSynchronizerAgnostic> logger,
+    public TicketsSynchronizer(
+        ILogger<TicketsSynchronizer> logger,
         IMapper mapper,
         AzureSqlDataProvider sql,
         CosmosDbDataProvider cosmos
@@ -31,20 +31,20 @@ public class ProjectsSynchronizerAgnostic : ISynchronizer
 
     public async Task<bool> SynchronizeAsync(CancellationToken token)
     {
-        var lastSyncId = await _cosmos.GetLastSynchronizedProjectId(token);
-        var sqlUnsync = await _sql.GetProjectsToSync(project => project.Id > lastSyncId, token);
+        var lastSyncId = await _cosmos.GetLastSynchronizedTicketId(token);
+        var sqlUnsync = await _sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
 
         if (sqlUnsync.Count == 0)
         {
-            _logger.LogInformation("There is no projects to sync");
+            _logger.LogInformation("There is no tickets to sync");
             return false;
         }
 
-        var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
-        await _cosmos.AddProjectsBulk(cosmosSync, token);
+        var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Ticket>>(sqlUnsync);
+        await _cosmos.AddTicketsBulk(cosmosSync, token);
         var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-        await _cosmos.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
-        _logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
+        await _cosmos.UpdateLastSynchronizedTicketId(lastProjectToSync.Id, token);
+        _logger.LogInformation($"{sqlUnsync.Count} tickets were synchronized");
 
         return true;
     }
