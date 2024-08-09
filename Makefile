@@ -37,6 +37,8 @@ run-sync:
 	cd ProjectTasks.SyncFunction && func host start
 
 publish-sync:
+	dotnet clean ProjectTasks.SyncFunction/ProjectTasks.SyncFunction.csproj
+	dotnet publish ProjectTasks.SyncFunction/ProjectTasks.SyncFunction.csproj
 	rm -rf ProjectTasks.SyncFunction/obj
 	cd ProjectTasks.SyncFunction && func azure functionapp publish reporting-web-sync
 
