@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ProjectTasks.DataAccess.AzureSQL;
@@ -32,7 +31,7 @@ public class SynchronizerAgnostic
 
     public async Task<bool> SynchronizeProjects(CancellationToken token)
     {
-        var lastSyncId = await _sql.GetLastSynchronizedProjectId(token);
+        var lastSyncId = await _cosmos.GetLastSynchronizedProjectId(token);
         var sqlUnsync = await _sql.GetProjectsToSync(project => project.Id > lastSyncId, token);
 
         if (sqlUnsync.Count == 0)
@@ -44,7 +43,7 @@ public class SynchronizerAgnostic
         var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
         await _cosmos.AddProjectsBulk(cosmosSync, token);
         var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-        await _sql.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
+        await _cosmos.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
         _logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
 
         return true;

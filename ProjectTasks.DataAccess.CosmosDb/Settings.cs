@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjectTasks.DataAccess.AzureSQL;
+namespace ProjectTasks.DataAccess.CosmosDb;
 
-[Table("settings")]
-public class Settings
+public class Settings : IWithPartitionKey
 {
     [Key]
     public string Key { get; set; }
     public string Value { get; set; }
+    public string PartitionKey { get; set; }
     public static string LastSynchronizedProjectId = "LastSynchronizedProjectId";
     public static string LastSynchronizedTicketId = "LastSynchronizedTaskId";
 }

@@ -78,43 +78,4 @@ public class AzureSqlDataProvider :
             .Where(predicate)
             .ToListAsync(token);
     }
-
-    public async Task<int> GetLastSynchronizedProjectId(CancellationToken token)
-    {
-        int.TryParse(await GetSetting(Settings.LastSynchronizedProjectId, token), out var candidate);
-        return candidate;
-    }
-
-    public async Task<int> GetLastSynchronizedTicketId(CancellationToken token)
-    {
-        int.TryParse(await GetSetting(Settings.LastSynchronizedTicketId, token), out var candidate);
-        return candidate;
-    }
-
-    private async Task<string> GetSetting(string key, CancellationToken token)
-    {
-        var candidate = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
-        return candidate == null ? "" : candidate.Value;
-    }
-
-    private async Task<bool> SetSetting(string key, string value, CancellationToken token)
-    {
-        var current = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
-        if (current == null)
-        {
-            await _db.Settings.AddAsync(new Settings{ Key = key, Value = value }, token);
-            await _db.SaveChangesAsync(token);
-            return true;
-        }
-
-        current.Value = value;
-        await _db.SaveChangesAsync(token);
-        return true;
-    }
-
-    public async Task<bool> UpdateLastSynchronizedProjectId(int id, CancellationToken token)
-    {
-        await SetSetting(Settings.LastSynchronizedProjectId, id.ToString(), token);
-        return true;
-    }
 }

@@ -11,6 +11,4 @@ public interface IProjectDataProvider
     Task<IEnumerable<IProject>> GetAllProjectsAsync(CancellationToken token);
     Task<IProject> GetFirstOrDefaultProjectAsync(Expression<Func<IProject, bool>> predicate, CancellationToken token);
     Task<IProject> CreateProjectAsync(string name, string code, CancellationToken token);
-    Task<List<IProject>> GetProjectsToSync(Expression<Func<IProject, bool>> predicate, CancellationToken token);
-    Task<int> GetLastSynchronizedProjectId(CancellationToken token);
 }

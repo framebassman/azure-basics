@@ -6,6 +6,7 @@ public class CosmosDbContext(DbContextOptions<CosmosDbContext> options) : DbCont
 {
     public DbSet<Project> Projects { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<Settings> Settings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,6 +18,11 @@ public class CosmosDbContext(DbContextOptions<CosmosDbContext> options) : DbCont
         modelBuilder.Entity<Ticket>()
             .HasNoDiscriminator()
             .ToContainer(nameof(Tickets))
+            .HasPartitionKey(entity => entity.PartitionKey);
+
+        modelBuilder.Entity<Settings>()
+            .HasNoDiscriminator()
+            .ToContainer(nameof(Settings))
             .HasPartitionKey(entity => entity.PartitionKey);
 
         base.OnModelCreating(modelBuilder);
