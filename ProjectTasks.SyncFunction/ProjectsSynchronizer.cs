@@ -21,8 +21,8 @@ public class ProjectsSynchronizer(
     {
         try
         {
-            var lastSyncId = await cosmos.GetLastSynchronizedProjectId(token);
-            var sqlUnsync = await sql.GetProjectsToSync(project => project.Id > lastSyncId, token);
+            var lastSyncIdBefore = await cosmos.GetLastSynchronizedProjectId(token);
+            var sqlUnsync = await sql.GetProjectsToSync(project => project.Id > lastSyncIdBefore, token);
 
             if (sqlUnsync.Count == 0)
             {
@@ -32,8 +32,8 @@ public class ProjectsSynchronizer(
 
             var cosmosSync = mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
             await cosmos.AddProjectsBulk(cosmosSync, token);
-            var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-            await cosmos.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
+            var lastSyncIdAfter = sqlUnsync.TakeLast(1).First();
+            await cosmos.UpdateLastSynchronizedProjectId(lastSyncIdAfter.Id, token);
             logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
 
             return true;

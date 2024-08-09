@@ -21,8 +21,8 @@ public class TicketsSynchronizer(
     {
         try
         {
-            var lastSyncId = await cosmos.GetLastSynchronizedTicketId(token);
-            var sqlUnsync = await sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
+            var lastSyncIdBefore = await cosmos.GetLastSynchronizedTicketId(token);
+            var sqlUnsync = await sql.GetTicketsToSync(ticket => ticket.Id > lastSyncIdBefore, token);
 
             if (sqlUnsync.Count == 0)
             {
@@ -32,8 +32,8 @@ public class TicketsSynchronizer(
 
             var cosmosSync = mapper.Map<List<DataAccess.CosmosDb.Ticket>>(sqlUnsync);
             await cosmos.AddTicketsBulk(cosmosSync, token);
-            var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-            await cosmos.UpdateLastSynchronizedTicketId(lastProjectToSync.Id, token);
+            var lastSyncIdAfter = sqlUnsync.TakeLast(1).First();
+            await cosmos.UpdateLastSynchronizedTicketId(lastSyncIdAfter.Id, token);
             logger.LogInformation($"{sqlUnsync.Count} tickets were synchronized");
 
             return true;

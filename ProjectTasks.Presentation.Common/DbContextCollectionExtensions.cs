@@ -9,8 +9,8 @@ namespace ProjectTasks.Presentation.Common;
 public static class DbContextCollectionExtensions
 {
     private static string STORAGE_TYPE = "STORAGE_TYPE";
-    private static string AzureSQL = "AzureSQL";
-    private static string CosmosDb = "CosmosDb";
+    public static string AzureSQL = "AzureSQL";
+    public static string CosmosDb = "CosmosDb";
 
     public static void AddDataProvider(this IServiceCollection services, string storageType, ILogger log, ServiceLifetime lifetime)
     {
@@ -37,7 +37,7 @@ public static class DbContextCollectionExtensions
         else
         {
             Log.Logger.Error($"Unknown {STORAGE_TYPE} configuration");
-            throw new System.ArgumentOutOfRangeException
+            throw new ArgumentOutOfRangeException
             (
                 STORAGE_TYPE,
                 $"Please, define {STORAGE_TYPE} by environment variables or Asp Net Core Configuration. Application supports {AzureSQL} and {CosmosDb} storage types."
