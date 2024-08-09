@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.DataAccess.CosmosDb;
 
@@ -18,21 +19,29 @@ public class TicketsSynchronizer(
 {
     public async Task<bool> SynchronizeAsync(CancellationToken token)
     {
-        var lastSyncId = await cosmos.GetLastSynchronizedTicketId(token);
-        var sqlUnsync = await sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
-
-        if (sqlUnsync.Count == 0)
+        try
         {
-            logger.LogInformation("There is no tickets to sync");
+            var lastSyncId = await cosmos.GetLastSynchronizedTicketId(token);
+            var sqlUnsync = await sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
+
+            if (sqlUnsync.Count == 0)
+            {
+                logger.LogInformation("There is no tickets to sync");
+                return false;
+            }
+
+            var cosmosSync = mapper.Map<List<DataAccess.CosmosDb.Ticket>>(sqlUnsync);
+            await cosmos.AddTicketsBulk(cosmosSync, token);
+            var lastProjectToSync = sqlUnsync.TakeLast(1).First();
+            await cosmos.UpdateLastSynchronizedTicketId(lastProjectToSync.Id, token);
+            logger.LogInformation($"{sqlUnsync.Count} tickets were synchronized");
+
+            return true;
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e.Message, e);
             return false;
         }
-
-        var cosmosSync = mapper.Map<List<DataAccess.CosmosDb.Ticket>>(sqlUnsync);
-        await cosmos.AddTicketsBulk(cosmosSync, token);
-        var lastProjectToSync = sqlUnsync.TakeLast(1).First();
-        await cosmos.UpdateLastSynchronizedTicketId(lastProjectToSync.Id, token);
-        logger.LogInformation($"{sqlUnsync.Count} tickets were synchronized");
-
-        return true;
     }
 }
