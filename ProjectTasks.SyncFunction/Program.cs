@@ -6,12 +6,10 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectTasks.DataAccess.AzureSQL;
 using ProjectTasks.SyncFunction;
 using ProjectTasks.Presentation.Common;
 using Serilog;
 using ProjectTasks.DataAccess.Common;
-using ProjectTasks.SyncFunction.First;
 
 var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
