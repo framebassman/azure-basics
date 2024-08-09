@@ -11,20 +11,11 @@ namespace ProjectTasks.SyncFunction
     public class SyncFunction
     {
         private ILogger<SyncFunction> _logger;
-        private ProjectsSynchronizer _projectsSynchronizer;
-        private TicketsSynchronizer _ticketsSynchronizer;
         private SynchronizerAgnostic _synchronizerAgnostic;
 
-        public SyncFunction(
-            ILogger<SyncFunction> logger,
-            ProjectsSynchronizer projectsSynchronizer,
-            TicketsSynchronizer ticketsSynchronizer,
-            SynchronizerAgnostic synchronizerAgnostic
-        )
+        public SyncFunction(ILogger<SyncFunction> logger, SynchronizerAgnostic synchronizerAgnostic)
         {
             _logger = logger;
-            _projectsSynchronizer = projectsSynchronizer;
-            _ticketsSynchronizer = ticketsSynchronizer;
             _synchronizerAgnostic = synchronizerAgnostic;
 
         }
@@ -35,10 +26,11 @@ namespace ProjectTasks.SyncFunction
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            // await Task.WhenAll(_projectsSynchronizer.SynchronizeAsync(), _ticketsSynchronizer.SynchronizeAsync());
-            var result = await _synchronizerAgnostic.SynchronizeProjects(new CancellationToken());
-            var message = result ? "Data were synchronized" : "There is no data to synchronize";
-            return new OkObjectResult(message);
+            await Task.WhenAll(
+                // _synchronizerAgnostic.SynchronizeProjects(new CancellationToken()),
+                _synchronizerAgnostic.SynchronizeTickets(new CancellationToken())
+            );
+            return new OkObjectResult("Data were synchronized");
         }
     }
 }

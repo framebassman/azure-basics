@@ -72,7 +72,7 @@ public class AzureSqlDataProvider :
             .ToListAsync(token);
     }
 
-    public async Task<List<ITicket>> GetTicketsWhereAsync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
+    public async Task<List<ITicket>> GetTicketsToSync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
     {
         return await _db.Tickets
             .Where(predicate)

@@ -89,6 +89,14 @@ public class CosmosDbDataProvider :
         return true;
     }
 
+    public async Task<bool> AddTicketsBulk(List<Ticket> projects, CancellationToken token)
+    {
+        projects.ForEach(e => e.PartitionKey = "Test");
+        await _db.Tickets.AddRangeAsync(projects, token);
+        await _db.SaveChangesAsync(token);
+        return true;
+    }
+
     public async Task<int> GetLastSynchronizedProjectId(CancellationToken token)
     {
         int.TryParse(await GetSetting(Settings.LastSynchronizedProjectId, token), out var candidate);
@@ -125,6 +133,12 @@ public class CosmosDbDataProvider :
     public async Task<bool> UpdateLastSynchronizedProjectId(int id, CancellationToken token)
     {
         await SetSetting(Settings.LastSynchronizedProjectId, id.ToString(), token);
+        return true;
+    }
+
+    public async Task<bool> UpdateLastSynchronizedTicketId(int id, CancellationToken token)
+    {
+        await SetSetting(Settings.LastSynchronizedTicketId, id.ToString(), token);
         return true;
     }
 }

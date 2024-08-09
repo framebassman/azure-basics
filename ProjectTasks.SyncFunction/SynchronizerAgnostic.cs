@@ -36,7 +36,7 @@ public class SynchronizerAgnostic
 
         if (sqlUnsync.Count == 0)
         {
-            _logger.LogInformation($"There is no Projects to sync");
+            _logger.LogInformation("There is no projects to sync");
             return false;
         }
 
@@ -45,6 +45,26 @@ public class SynchronizerAgnostic
         var lastProjectToSync = sqlUnsync.TakeLast(1).First();
         await _cosmos.UpdateLastSynchronizedProjectId(lastProjectToSync.Id, token);
         _logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
+
+        return true;
+    }
+
+    public async Task<bool> SynchronizeTickets(CancellationToken token)
+    {
+        var lastSyncId = await _cosmos.GetLastSynchronizedTicketId(token);
+        var sqlUnsync = await _sql.GetTicketsToSync(ticket => ticket.Id > lastSyncId, token);
+
+        if (sqlUnsync.Count == 0)
+        {
+            _logger.LogInformation("There is no tickets to sync");
+            return false;
+        }
+
+        var cosmosSync = _mapper.Map<List<DataAccess.CosmosDb.Ticket>>(sqlUnsync);
+        await _cosmos.AddTicketsBulk(cosmosSync, token);
+        var lastProjectToSync = sqlUnsync.TakeLast(1).First();
+        await _cosmos.UpdateLastSynchronizedTicketId(lastProjectToSync.Id, token);
+        _logger.LogInformation($"{sqlUnsync.Count} tickets were synchronized");
 
         return true;
     }
