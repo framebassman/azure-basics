@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,5 +63,19 @@ public class AzureSqlDataProvider :
         var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
         return entry.Entity;
+    }
+
+    public async Task<List<IProject>> GetProjectsToSync(Expression<Func<IProject, bool>> predicate, CancellationToken token)
+    {
+        return await _db.Projects
+            .Where(predicate)
+            .ToListAsync(token);
+    }
+
+    public async Task<List<ITicket>> GetTicketsToSync(Expression<Func<ITicket, bool>> predicate, CancellationToken token)
+    {
+        return await _db.Tickets
+            .Where(predicate)
+            .ToListAsync(token);
     }
 }

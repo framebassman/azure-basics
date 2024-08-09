@@ -1,0 +1,47 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.CosmosDb;
+
+namespace ProjectTasks.SyncFunction;
+
+public class ProjectsSynchronizer(
+    ILogger<ProjectsSynchronizer> logger,
+    IMapper mapper,
+    AzureSqlDataProvider sql,
+    CosmosDbDataProvider cosmos)
+    : ISynchronizer
+{
+    public async Task<bool> SynchronizeAsync(CancellationToken token)
+    {
+        try
+        {
+            var lastSyncIdBefore = await cosmos.GetLastSynchronizedProjectId(token);
+            var sqlUnsync = await sql.GetProjectsToSync(project => project.Id > lastSyncIdBefore, token);
+
+            if (sqlUnsync.Count == 0)
+            {
+                logger.LogInformation("There is no projects to sync");
+                return false;
+            }
+
+            var cosmosSync = mapper.Map<List<DataAccess.CosmosDb.Project>>(sqlUnsync);
+            await cosmos.AddProjectsBulk(cosmosSync, token);
+            var lastSyncIdAfter = sqlUnsync.TakeLast(1).First();
+            await cosmos.UpdateLastSynchronizedProjectId(lastSyncIdAfter.Id, token);
+            logger.LogInformation($"{sqlUnsync.Count} projects were synchronized");
+
+            return true;
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e.Message, e);
+            return false;
+        }
+    }
+}

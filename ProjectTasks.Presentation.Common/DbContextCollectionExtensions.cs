@@ -1,17 +1,18 @@
+using Microsoft.Extensions.DependencyInjection;
 using ProjectTasks.DataAccess.AzureSQL;
+using ProjectTasks.DataAccess.Common;
 using ProjectTasks.DataAccess.CosmosDb;
 using Serilog;
-using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
-namespace ProjectTasks.WebApi;
+namespace ProjectTasks.Presentation.Common;
 
 public static class DbContextCollectionExtensions
 {
     private static string STORAGE_TYPE = "STORAGE_TYPE";
-    private static string AzureSQL = "AzureSQL";
-    private static string CosmosDb = "CosmosDb";
+    public static string AzureSQL = "AzureSQL";
+    public static string CosmosDb = "CosmosDb";
 
-    public static void AddDataProvider(this IServiceCollection services, string storageType, Serilog.ILogger log)
+    public static void AddDataProvider(this IServiceCollection services, string storageType, ILogger log, ServiceLifetime lifetime)
     {
         var serviceProvider = services.BuildServiceProvider();
         var secrets = serviceProvider.GetService<SecretsProvider>();
@@ -20,7 +21,8 @@ public static class DbContextCollectionExtensions
         {
             services.AddAzureSqlDataProvider
             (
-                secrets.Retrieve("reporting-web-api-connection-string")
+                secrets.Retrieve("reporting-web-api-connection-string"),
+                lifetime
             );
         }
         else if (storageType == CosmosDb)
@@ -28,7 +30,8 @@ public static class DbContextCollectionExtensions
             services.AddCosmosDbDataProvider
             (
                 secrets.Retrieve("reporting-web-api-cosmosdb-connection-string"),
-                "ProjectsTasks"
+                "ProjectsTasks",
+                lifetime
             );
         }
         else

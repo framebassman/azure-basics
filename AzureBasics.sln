@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.WebApi", "Proj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.WebApi.Tests.Unit", "ProjectTasks.WebApi.Tests.Unit\ProjectTasks.WebApi.Tests.Unit.csproj", "{349D0ECF-3BC9-4EF0-9F81-43DEFA6E3075}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.SyncFunction", "ProjectTasks.SyncFunction\ProjectTasks.SyncFunction.csproj", "{FD5AD36D-62AC-4219-AAED-BA3E7D3924BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTasks.Presentation.Common", "ProjectTasks.Presentation.Common\ProjectTasks.Presentation.Common.csproj", "{A12B7C73-C5D3-4B7D-89A6-98C0329E8CB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{349D0ECF-3BC9-4EF0-9F81-43DEFA6E3075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{349D0ECF-3BC9-4EF0-9F81-43DEFA6E3075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{349D0ECF-3BC9-4EF0-9F81-43DEFA6E3075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD5AD36D-62AC-4219-AAED-BA3E7D3924BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5AD36D-62AC-4219-AAED-BA3E7D3924BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5AD36D-62AC-4219-AAED-BA3E7D3924BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5AD36D-62AC-4219-AAED-BA3E7D3924BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A12B7C73-C5D3-4B7D-89A6-98C0329E8CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A12B7C73-C5D3-4B7D-89A6-98C0329E8CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A12B7C73-C5D3-4B7D-89A6-98C0329E8CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A12B7C73-C5D3-4B7D-89A6-98C0329E8CB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,7 +1,10 @@
+using System;
 using Azure.Core;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace ProjectTasks.WebApi;
+namespace ProjectTasks.DataAccess.Common;
 
 public class SecretsProvider
 {
@@ -31,7 +34,9 @@ public class SecretsProvider
 
     public string Retrieve(string secretKey)
     {
+        _log.LogDebug("Secret from keyvault is going to be retrieved");
         KeyVaultSecret secret = _keyVaultClient.GetSecret(secretKey);
+        _log.LogDebug("Secret was retrieved");
         return secret.Value;
     }
 }

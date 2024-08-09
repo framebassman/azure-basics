@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectTasks.DataAccess.Common;
 
-namespace ProjectTasks.DataAccess.CosmosDb; 
+namespace ProjectTasks.DataAccess.CosmosDb;
 
 public class CosmosDbDataProvider :
     IProjectDataProvider,
@@ -69,5 +69,66 @@ public class CosmosDbDataProvider :
         var entry = await _db.Tickets.AddAsync(ticket, token);
         await _db.SaveChangesAsync(token);
         return entry.Entity;
+    }
+
+    public async Task<bool> AddProjectsBulk(List<Project> projects, CancellationToken token)
+    {
+        projects.ForEach(e => e.PartitionKey = "Test");
+        await _db.Projects.AddRangeAsync(projects, token);
+        await _db.SaveChangesAsync(token);
+        return true;
+    }
+
+    public async Task<bool> AddTicketsBulk(List<Ticket> projects, CancellationToken token)
+    {
+        projects.ForEach(e => e.PartitionKey = "Test");
+        await _db.Tickets.AddRangeAsync(projects, token);
+        await _db.SaveChangesAsync(token);
+        return true;
+    }
+
+    public async Task<int> GetLastSynchronizedProjectId(CancellationToken token)
+    {
+        int.TryParse(await GetSetting(Settings.LastSynchronizedProjectId, token), out var candidate);
+        return candidate;
+    }
+
+    public async Task<int> GetLastSynchronizedTicketId(CancellationToken token)
+    {
+        int.TryParse(await GetSetting(Settings.LastSynchronizedTicketId, token), out var candidate);
+        return candidate;
+    }
+
+    private async Task<string> GetSetting(string key, CancellationToken token)
+    {
+        var candidate = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
+        return candidate == null ? "" : candidate.Value;
+    }
+
+    private async Task<bool> SetSetting(string key, string value, CancellationToken token)
+    {
+        var current = await _db.Settings.FirstOrDefaultAsync(entry => entry.Key == key, token);
+        if (current == null)
+        {
+            await _db.Settings.AddAsync(new Settings{ Key = key, Value = value, PartitionKey = "Test" }, token);
+            await _db.SaveChangesAsync(token);
+            return true;
+        }
+
+        current.Value = value;
+        await _db.SaveChangesAsync(token);
+        return true;
+    }
+
+    public async Task<bool> UpdateLastSynchronizedProjectId(int id, CancellationToken token)
+    {
+        await SetSetting(Settings.LastSynchronizedProjectId, id.ToString(), token);
+        return true;
+    }
+
+    public async Task<bool> UpdateLastSynchronizedTicketId(int id, CancellationToken token)
+    {
+        await SetSetting(Settings.LastSynchronizedTicketId, id.ToString(), token);
+        return true;
     }
 }
