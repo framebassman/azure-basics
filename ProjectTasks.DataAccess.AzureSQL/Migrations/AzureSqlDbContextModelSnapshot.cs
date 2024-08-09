@@ -36,12 +36,9 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("WasSynchronized")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
-                    b.ToTable("projects");
+                    b.ToTable("projects", (string)null);
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>
@@ -62,14 +59,11 @@ namespace ProjectTasks.DataAccess.AzureSQL.Migrations
                     b.Property<int>("ProjectReferenceId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("WasSynchronized")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectReferenceId");
 
-                    b.ToTable("tasks");
+                    b.ToTable("tasks", (string)null);
                 });
 
             modelBuilder.Entity("ProjectTasks.DataAccess.AzureSQL.Ticket", b =>

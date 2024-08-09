@@ -28,7 +28,7 @@ migrations-azuresql-add-%:
 
 update-azure-sql:
 	STORAGE_TYPE=AzureSQL dotnet ef \
-		database update WasSynchronized \
+		database update \
 		--project ProjectTasks.WebApi/ProjectTasks.WebApi.csproj
 
 run-sync:
